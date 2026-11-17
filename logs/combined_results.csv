@@ -1,0 +1,39 @@
+experiment_id,timestamp,model,cache_mode,question_id,task_type,prompt,reference_answer,required_points,model_answer,request_time_seconds,prompt_tokens,generated_tokens,request_tokens_per_second,finish_reason,temperature,max_output_tokens,threads,context_size,gpu_layers
+3f24febf,2026-11-15T01:17:05,qwen2.5-1.5b-instruct-q4_k_m.gguf,disabled,Q001,factual,What is the difference between RAM and ROM?,RAM is volatile memory used for temporary data while programs are running. ROM is non-volatile memory used to store data or instructions that persist without power.,"[""RAM is volatile"", ""RAM is used for temporary working data"", ""ROM is non-volatile"", ""ROM retains information without power""]","RAM stands for Random Access Memory, while ROM stands for Read-Only Memory. The main difference between these two types of memory is their access method and functionality:
+
+1. RAM:
+   - Random Access Memory allows data to be read and written to it at any time.
+   - It is volatile, meaning it loses its contents when power is removed.
+   - RAM is used for storing data that is currently being used by the computer, such as running programs and applications.
+   - It is faster than ROM but less reliable due to its volatile nature.
+
+2. ROM:
+   - Read-Only Memory allows data to be read but not written to it.
+   - It is non-volatile, meaning its contents do not change when power is removed.
+   - ROM is used for storing essential system information, such as the BIOS (Basic Input/Output System) and system configuration settings.
+   - It is slower than RAM but more reliable due to its non-volatile nature.
+
+In summary, RAM is used for temporary storage of data, while ROM is used for storing essential system information that should not be altered.",10.429079,48,223,21.3825,stop,0,256,4,2048,0
+3f24febf,2026-11-15T01:17:08,qwen2.5-1.5b-instruct-q4_k_m.gguf,disabled,Q002,explanation,Explain what a database is in simple terms.,"A database is an organized collection of data that can be stored, accessed, managed and updated electronically.","[""Organized collection of data"", ""Data can be stored"", ""Data can be retrieved or accessed"", ""Data can be managed or updated""]","A database is like a digital library where you can store, organize, and retrieve information. It's a collection of data that's stored in a structured format, allowing you to search for specific pieces of information quickly and efficiently. Think of it as a searchable, organized repository of data that can be accessed by multiple users or applications.",3.04177,49,67,22.0266,stop,0,256,4,2048,0
+3f24febf,2026-11-15T01:17:13,qwen2.5-1.5b-instruct-q4_k_m.gguf,disabled,Q003,reasoning,"A shop sells a notebook for 40 rupees. If a customer buys 3 notebooks and pays 200 rupees, how much change should they receive? Explain.","Three notebooks cost 3 multiplied by 40, which is 120 rupees. The customer receives 200 minus 120, which is 80 rupees in change.","[""Calculates total cost as 120 rupees"", ""Subtracts total cost from 200 rupees"", ""Gives final change as 80 rupees""]","To determine the change, we need to calculate the total cost of 3 notebooks and then subtract that from the amount paid.
+
+1. The cost of one notebook is 40 rupees.
+2. The cost of 3 notebooks is \(3 \times 40 = 120\) rupees.
+3. The customer paid 200 rupees.
+4. The change is \(200 - 120 = 80\) rupees.
+
+Therefore, the customer should receive 80 rupees in change.",5.308562,76,113,21.2864,stop,0,256,4,2048,0
+3f24febf,2026-11-15T01:17:19,qwen2.5-1.5b-instruct-q4_k_m.gguf,disabled,Q004,coding,Write a Python function that returns the largest of three numbers.,"A valid Python function should accept three numbers and return their maximum, for example using max(a, b, c).","[""Defines a Python function"", ""Accepts three numbers"", ""Returns the largest number"", ""Uses valid Python syntax""]","Here's a Python function that takes three numbers as input and returns the largest of them:
+
+```python
+def largest_of_three(a, b, c):
+    if a >= b and a >= c:
+        return a
+    elif b >= a and b >= c:
+        return b
+    else:
+        return c
+```
+
+This function uses conditional statements to compare the three numbers and return the largest one. If `a` is greater than or equal to both `b` and `c`, it returns `a`. If `b` is greater than or equal to both `a` and `c`, it returns `b`. Otherwise, it returns `c`.",6.053161,51,138,22.798,stop,0,256,4,2048,0
+3f24febf,2026-11-15T01:17:21,qwen2.5-1.5b-instruct-q4_k_m.gguf,disabled,Q005,summarization,Summarize this text in one sentence: Machine learning is a branch of artificial intelligence in which computers learn patterns from data to make predictions or decisions without being explicitly programmed for every task.,Machine learning enables computers to learn patterns from data and use them to make predictions or decisions.,"[""Mentions learning patterns from data"", ""Mentions predictions or decisions"", ""Preserves the original meaning"", ""Uses one sentence""]",Machine learning is a subset of artificial intelligence that enables computers to learn patterns from data and make predictions or decisions based on that learning.,1.903638,76,27,14.1834,stop,0,256,4,2048,0

@@ -1,0 +1,6 @@
+question_id,task_type,correctness,completeness,relevance,clarity,instruction_following,total_score,quality_percentage,reviewed_at
+Q001,factual,2,2,2,2,2,10,100.0,2026-11-15T01:07:05
+Q002,explanation,2,2,2,2,2,10,100.0,2026-11-15T01:07:27
+Q003,reasoning,2,2,2,2,2,10,100.0,2026-11-15T01:09:21
+Q004,coding,2,2,2,2,2,10,100.0,2026-11-15T01:09:54
+Q005,summarization,2,2,2,2,2,10,100.0,2026-11-15T01:10:11

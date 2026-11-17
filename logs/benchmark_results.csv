@@ -1,0 +1,4 @@
+timestamp,model,threads,context_size,max_output_tokens,wall_time_seconds,prompt_tokens_per_second,generation_tokens_per_second,peak_process_ram_mb
+2026-11-03T01:39:39,qwen2.5-1.5b-instruct-q4_k_m.gguf,4,2048,128,8.208,86.2,20.7,1310.54
+2026-11-03T01:47:04,qwen2.5-1.5b-instruct-q4_k_m.gguf,4,2048,128,7.353,62,25.2,1310.11
+2026-11-11T03:28:18,qwen2.5-1.5b-instruct-q4_k_m.gguf,4,2048,128,15.398,40.8,15.5,1309.73

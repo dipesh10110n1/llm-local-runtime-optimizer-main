@@ -1,0 +1,18 @@
+.env
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+.mypy_cache/
+data/
+datasets/raw/
+datasets/processed/*.jsonl
+!datasets/processed/.gitkeep
+logs/runtime_telemetry.jsonl
+
+# Large model files
+models/*.gguf
+models/*.bin
+*.gguf
+*.bin
