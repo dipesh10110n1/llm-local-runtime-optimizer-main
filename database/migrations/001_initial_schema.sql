@@ -1,0 +1,3 @@
+-- Execute with: mysql -u USER -p DATABASE < database/migrations/001_initial_schema.sql
+-- The SQLAlchemy initializer is authoritative and is used to create the same tables.
+-- Migration tracked as a versioned artifact; use `python -m database.initialize` after setting DATABASE_URL.

@@ -1,0 +1,6 @@
+experiment_id,model,cache_mode,question_id,task_type,correctness,completeness,relevance,clarity,instruction_following,total_score,quality_percentage,reviewed_at
+3f24febf,qwen2.5-1.5b-instruct-q4_k_m.gguf,disabled,Q001,factual,2,2,2,2,2,10,100,2026-11-15T01:20:10
+3f24febf,qwen2.5-1.5b-instruct-q4_k_m.gguf,disabled,Q002,explanation,2,2,2,2,2,10,100,2026-11-15T01:20:32
+3f24febf,qwen2.5-1.5b-instruct-q4_k_m.gguf,disabled,Q003,reasoning,2,2,2,2,2,10,100,2026-11-15T01:20:53
+3f24febf,qwen2.5-1.5b-instruct-q4_k_m.gguf,disabled,Q004,coding,2,2,2,2,2,10,100,2026-11-15T01:21:11
+3f24febf,qwen2.5-1.5b-instruct-q4_k_m.gguf,disabled,Q005,summarization,2,2,2,2,2,10,100,2026-11-15T01:21:35

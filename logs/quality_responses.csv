@@ -1,0 +1,29 @@
+timestamp,model,question_id,task_type,prompt,reference_answer,required_points,model_answer,request_time_seconds,prompt_tokens,generated_tokens,prompt_ms,generation_ms,generation_tokens_per_second
+2026-11-15T01:03:33,qwen2.5-1.5b-instruct-q4_k_m.gguf,Q001,factual,What is the difference between RAM and ROM?,RAM is volatile memory used for temporary data while programs are running. ROM is non-volatile memory used to store data or instructions that persist without power.,"[""RAM is volatile"", ""RAM is used for temporary working data"", ""ROM is non-volatile"", ""ROM retains information without power""]","RAM stands for Random Access Memory, while ROM stands for Read-Only Memory. The main difference is that RAM is volatile, meaning it loses its data when power is turned off, while ROM is non-volatile and retains its data even when power is removed. Additionally, RAM is used for temporary data storage, while ROM is used for permanent data storage.",4.632971,53,72,,,
+2026-11-15T01:03:33,qwen2.5-1.5b-instruct-q4_k_m.gguf,Q002,explanation,Explain what a database is in simple terms.,"A database is an organized collection of data that can be stored, accessed, managed and updated electronically.","[""Organized collection of data"", ""Data can be stored"", ""Data can be retrieved or accessed"", ""Data can be managed or updated""]","A database is like a digital library where you can store, organize, and retrieve information. It's a collection of data that's stored in a structured format, allowing for easy access and manipulation. Think of it as a searchable repository where you can save and search for various types of information, such as customer records, inventory details, or academic data. Databases are used in many applications, from personal note-taking to managing large-scale business operations.",3.811593,54,90,,,
+2026-11-15T01:03:33,qwen2.5-1.5b-instruct-q4_k_m.gguf,Q003,reasoning,"A shop sells a notebook for 40 rupees. If a customer buys 3 notebooks and pays 200 rupees, how much change should they receive? Explain.","Three notebooks cost 3 multiplied by 40, which is 120 rupees. The customer receives 200 minus 120, which is 80 rupees in change.","[""Calculates total cost as 120 rupees"", ""Subtracts total cost from 200 rupees"", ""Gives final change as 80 rupees""]","To calculate the change, we first need to determine the total cost of the 3 notebooks. Since each notebook costs 40 rupees, the total cost for 3 notebooks is:
+
+3 notebooks * 40 rupees/notebook = 120 rupees
+
+The customer paid 200 rupees in total. To find the change, we subtract the total cost from the amount paid:
+
+200 rupees - 120 rupees = 80 rupees
+
+So, the customer should receive 80 rupees in change.",5.240797,81,118,,,
+2026-11-15T01:03:33,qwen2.5-1.5b-instruct-q4_k_m.gguf,Q004,coding,Write a Python function that returns the largest of three numbers.,"A valid Python function should accept three numbers and return their maximum, for example using max(a, b, c).","[""Defines a Python function"", ""Accepts three numbers"", ""Returns the largest number"", ""Uses valid Python syntax""]","```python
+def max_of_three(a, b, c):
+    """"""
+    This function takes three numbers as input and returns the largest of the three.
+    """"""
+    if a >= b and a >= c:
+        return a
+    elif b >= a and b >= c:
+        return b
+    else:
+        return c
+
+# Example usage:
+print(max_of_three(10, 20, 30))  # Output: 30
+print(max_of_three(5, 15, 10))   # Output: 15
+```",5.285113,56,121,,,
+2026-11-15T01:03:33,qwen2.5-1.5b-instruct-q4_k_m.gguf,Q005,summarization,Summarize this text in one sentence: Machine learning is a branch of artificial intelligence in which computers learn patterns from data to make predictions or decisions without being explicitly programmed for every task.,Machine learning enables computers to learn patterns from data and use them to make predictions or decisions.,"[""Mentions learning patterns from data"", ""Mentions predictions or decisions"", ""Preserves the original meaning"", ""Uses one sentence""]",Machine learning is a subset of artificial intelligence that enables computers to learn patterns from data and make predictions or decisions without explicit programming.,1.484619,81,26,,,
