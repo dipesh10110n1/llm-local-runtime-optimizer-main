@@ -10,6 +10,7 @@ PROFILES = [
 def test_applies_hard_quality_constraint():
     result = Optimizer().recommend(PROFILES, OptimizationRequest(task_type="reasoning", minimum_quality=.8))
     assert result["selected"]["configuration_id"] == "accurate"
+    assert result["threshold_selection"]["quality_threshold"] == 0.8
 
 
 def test_reports_no_feasible_choice():

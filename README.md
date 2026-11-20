@@ -15,11 +15,11 @@ llama-server -m .\models\qwen2.5-1.5b-instruct-q4_k_m.gguf --host 127.0.0.1 --po
 In separate terminals:
 
 ```powershell
-uvicorn api.app:app --host 127.0.0.1 --port 8000
+uvicorn api.app:app --host 127.0.0.1 --port 8001
 streamlit run dashboard.py --server.address 127.0.0.1
 ```
 
-Open `http://127.0.0.1:8000/docs` for the API. See `docs/` for MySQL setup, data preparation, limitations, and method details.
+Open `http://127.0.0.1:8001/docs` for the API. See `docs/` for MySQL setup, data preparation, limitations, experiment protocol, Responsible AI governance, and method details.
 
 ## Presentation demonstration
 

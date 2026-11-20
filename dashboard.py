@@ -1,6 +1,7 @@
 """Orbit: a focused, local-first chat workspace."""
 from __future__ import annotations
 
+import os
 import time
 from typing import Any
 
@@ -8,7 +9,9 @@ import pandas as pd
 import streamlit as st
 
 from core.model_registry import load_models
+from core.settings import settings
 from optimizer.live_comparator import compare_on_spot
+from optimizer.evidence_report import dataset_readiness, energy_readiness, profile_pareto_view, selection_history
 from optimizer.request_router import record_selection, selection_caption
 from runtime.clients import InferenceError, backend_health
 from runtime.supervisor import RuntimeSwitchError, ensure_runtime
@@ -42,9 +45,9 @@ def clear_conversation() -> None:
 
 
 if "messages" not in st.session_state:
-    st.session_state.messages: list[dict[str, Any]] = []
+    st.session_state.messages = []
 if "last_telemetry" not in st.session_state:
-    st.session_state.last_telemetry: dict[str, Any] | None = None
+    st.session_state.last_telemetry = None
 
 models = local_models()
 runtime_model = models[0] if models else None
@@ -64,6 +67,43 @@ with st.sidebar:
     st.space("small")
     temperature = st.slider("Creative latitude", 0.0, 1.0, 0.2, 0.1, key="temperature")
     max_tokens = st.slider("Response length", 64, 512, 256, 32, key="max_tokens")
+    with st.expander("Optimization settings", expanded=False):
+        quality_gate = st.toggle("Require Spider SQL quality threshold", key="quality_gate")
+        quality_threshold = (
+            st.slider("Minimum execution quality", 0.0, 1.0, 0.8, 0.05, key="quality_threshold")
+            if quality_gate else None
+        )
+        reference_sql = (
+            st.text_area("Gold SQL reference", key="reference_sql", help="Required when a quality threshold is enabled.")
+            if quality_gate else None
+        )
+        spider_database_path = (
+            st.text_input("Local Spider SQLite path (optional)", key="spider_database_path", help="Enables read-only execution-equivalence matching instead of exact SQL matching only.")
+            if quality_gate else None
+        )
+        full_configuration_matrix = st.toggle("Compare safe runtime configurations", key="full_configuration_matrix")
+        max_live_candidates = (
+            int(st.number_input("Maximum live configurations", min_value=1, max_value=720, value=3, step=1, key="max_live_candidates"))
+            if full_configuration_matrix else None
+        )
+        safety_reserve_mb = float(
+            st.slider(
+                "RAM safety reserve (MiB)",
+                min_value=256,
+                max_value=2048,
+                value=int(getattr(settings, "safety_reserve_mb", 512.0)),
+                step=128,
+                key="safety_reserve_mb",
+                help="Headroom kept free for the operating system, Streamlit, and background processes.",
+            )
+        )
+        # Write to env so compare_on_spot and recommend_runtime pick it up at call time.
+        os.environ["ORBIT_SAFETY_RESERVE_MB"] = str(int(safety_reserve_mb))
+        st.caption(f"Quality is an admission constraint, never an estimate. Full comparison runs sequentially and preserves the {safety_reserve_mb:.0f} MiB RAM reserve.")
+    st.caption(
+        "Each message compares safe local candidates sequentially."
+        if full_configuration_matrix else f"Each message compares all {len(models)} installed local models sequentially."
+    )
     st.space("medium")
     st.caption("Private by design. Requests stay on this machine.")
 
@@ -108,9 +148,20 @@ if prompt:
         else:
             started = time.perf_counter()
             completed = False
-            with st.status(":shimmer[Comparing local Qwen responses for this prompt]", type="compact") as status:
+            with st.status(":shimmer[Generating and measuring every local Qwen response]", type="compact") as status:
                 try:
-                    decision = compare_on_spot(prompt, models, max_tokens, temperature)
+                    decision = compare_on_spot(
+                        prompt,
+                        models,
+                        max_tokens,
+                        temperature,
+                        compare_all_models=True,
+                        full_configuration_matrix=full_configuration_matrix,
+                        reference_sql=reference_sql,
+                        spider_database_path=spider_database_path or None,
+                        quality_threshold=quality_threshold,
+                        max_live_candidates=max_live_candidates,
+                    )
                     selected = decision.get("selected")
                     if selected is None:
                         response_text = decision["reason"]
@@ -127,8 +178,16 @@ if prompt:
                             "answer": response_text,
                             "backend": "llama.cpp",
                             "end_to_end_seconds": winner["latency_seconds"],
+                            "ttft_seconds": winner.get("ttft_seconds"),
                             "generated_tokens": winner.get("generated_tokens"),
                             "generation_tokens_per_second": winner.get("generation_tokens_per_second"),
+                            "peak_ram_mb": winner.get("peak_ram_mb"),
+                            "energy_proxy_watts": winner.get("energy_proxy_watts"),
+                            "energy_proxy_joules": winner.get("energy_proxy_joules"),
+                            "energy_measurement_kind": winner.get("energy_measurement_kind"),
+                            "task_quality": winner.get("task_quality"),
+                            "quality_per_watt": winner.get("quality_per_watt"),
+                            "weighted_score": winner.get("weighted_score"),
                             "measurement_kind": "selected_candidate_response",
                         }
                         elapsed = round(time.perf_counter() - started, 1)
@@ -153,11 +212,13 @@ if prompt:
 if st.session_state.last_telemetry:
     with st.expander("Response details", icon=":material/info:"):
         details = st.session_state.last_telemetry
-        decision = details.get("decision", {})
+        raw_decision = details.get("decision")
+        decision = raw_decision if isinstance(raw_decision, dict) else {}
         comparison = decision.get("live_comparison", [])
+        failures = decision.get("comparison_failures", [])
         if comparison:
             st.subheader("On-the-spot model comparison")
-            st.caption("Each complete response was generated sequentially from the same prompt. The answer above is the exact response selected by the local judge.")
+            st.caption("Each response was generated sequentially from the same prompt. The answer above is the exact response selected by the weighted measurement score.")
             rows = []
             selected_id = decision.get("selected", {}).get("model", {}).get("model_id")
             for index, entry in enumerate(comparison, start=1):
@@ -171,14 +232,54 @@ if st.session_state.last_telemetry:
                     "Threads": configuration["threads"],
                     "Context": configuration["context_size"],
                     "Cache": configuration["cache"],
+                    "Outcome": "Selected" if model_id == selected_id else "Compared",
+                    "Detail": "Response generated",
                     "Response latency (s)": round(entry["latency_seconds"], 3),
+                    "TTFT (s)": round(entry["ttft_seconds"], 3) if entry.get("ttft_seconds") is not None else None,
                     "Generated tokens": entry.get("generated_tokens"),
                     "Tokens / second": round(entry["generation_tokens_per_second"], 2) if entry.get("generation_tokens_per_second") else None,
+                    "Peak RAM (MiB)": round(entry["peak_ram_mb"], 1) if entry.get("peak_ram_mb") is not None else None,
+                    "Energy proxy (J)": round(entry["energy_proxy_joules"], 2) if entry.get("energy_proxy_joules") is not None else None,
+                    "Estimated power (W)": round(entry["energy_proxy_watts"], 2) if entry.get("energy_proxy_watts") is not None else None,
+                    "Task quality": entry.get("task_quality"),
+                    "Quality / proxy J": round(entry["quality_per_proxy_joule"], 4) if entry.get("quality_per_proxy_joule") is not None else None,
+                    "Quality / estimated W": round(entry["quality_per_estimated_watt"], 4) if entry.get("quality_per_estimated_watt") is not None else None,
+                    "Energy status": entry.get("energy_measurement_kind") or "proxy only",
+                    "Weighted score": round(entry["weighted_score"], 4) if entry.get("weighted_score") is not None else None,
                 })
-            st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
-            st.caption(f"Judge: {decision.get('judge_model_id', 'unavailable')} — {decision.get('reason', 'No decision reason recorded.')}")
-            st.subheader("Judge verdict")
-            st.code(decision.get("judge_output", "No judge verdict was recorded."), language=None)
+            for entry in failures:
+                configuration = entry["configuration"]
+                rows.append({
+                    "Candidate": "—",
+                    "Model": entry["candidate"]["model"]["model_id"],
+                    "Selected": False,
+                    "Backend": configuration["backend"],
+                    "Threads": configuration["threads"],
+                    "Context": configuration["context_size"],
+                    "Cache": configuration["cache"],
+                    "Outcome": "Unavailable",
+                    "Detail": entry["error"],
+                    "Response latency (s)": None,
+                    "TTFT (s)": None,
+                    "Generated tokens": None,
+                    "Tokens / second": None,
+                    "Peak RAM (MiB)": None,
+                    "Energy proxy (J)": None,
+                    "Estimated power (W)": None,
+                    "Task quality": None,
+                    "Quality / proxy J": None,
+                    "Quality / estimated W": None,
+                    "Energy status": "unavailable",
+                    "Weighted score": None,
+                })
+            st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True, alt="Per-model local quality, performance, memory, and energy-proxy comparison")
+            st.caption(decision.get("reason", "No decision reason recorded."))
+            if decision.get("quality_threshold") is not None:
+                st.caption(f"Quality threshold: {decision['quality_threshold']:.2f}. Candidates without measured task-valid quality are rejected.")
+            if decision.get("deferred_candidate_count"):
+                st.caption(f"{decision['deferred_candidate_count']} safe configurations were deferred by the live-run limit and were not compared in this response.")
+            st.subheader("Weighted selection")
+            st.json(decision.get("scoring", {}))
             st.subheader("Complete candidate responses")
             for index, entry in enumerate(comparison, start=1):
                 st.markdown(f"**Candidate {index} — {entry['candidate']['model']['model_id']}**")
@@ -190,3 +291,37 @@ if st.session_state.last_telemetry:
             "runtime_switched": details.get("runtime_state", {}).get("switched"),
             "telemetry": details.get("final_generation"),
         })
+        with st.expander("Evidence, history, and provenance", expanded=False, icon=":material/analytics:"):
+            st.caption("Local evidence only. Response text is not retained in history unless explicitly enabled in local settings.")
+            rejection_rows = []
+            for entry in decision.get("quality_rejections", []):
+                rejection_rows.append({"Type": "Quality gate", "Model": entry.get("model_id"), "Configuration": entry.get("configuration_id"), "Reason": entry.get("reason")})
+            for entry in decision.get("matrix_safety_skips", []):
+                model = entry.get("model") or {}
+                configuration = entry.get("configuration") or {}
+                rejection_rows.append({"Type": "RAM safety", "Model": model.get("model_id"), "Configuration": configuration.get("configuration_id"), "Reason": entry.get("reason")})
+            if rejection_rows:
+                st.subheader("Rejection reasons")
+                st.dataframe(pd.DataFrame(rejection_rows), hide_index=True, alt="Quality-gate and memory-safety rejection reasons")
+
+            pareto_rows = profile_pareto_view()
+            if pareto_rows:
+                st.subheader("Measured Pareto frontier")
+                st.caption("Non-dominated Spider profiles: higher quality, lower latency, and lower RAM. Proxy energy remains an estimate.")
+                st.dataframe(pd.DataFrame(pareto_rows), hide_index=True, alt="Measured non-dominated Spider benchmark profiles")
+
+            history_rows = selection_history()
+            if history_rows:
+                st.subheader("Recent local selections")
+                st.dataframe(pd.DataFrame(history_rows), hide_index=True, alt="Recent private local model selections without response text")
+
+            st.subheader("Dataset and energy readiness")
+            st.dataframe(pd.DataFrame(dataset_readiness()), hide_index=True, alt="Prepared local general-quality dataset readiness")
+            meter = energy_readiness()
+            st.json({
+                "physical_energy_available": meter.get("actual_energy_available"),
+                "meter_export_exists": meter.get("meter_export_exists"),
+                "configured_meter_path": meter.get("configured_meter_path"),
+                "note": meter.get("proxy_note"),
+            })
+            st.caption("Each benchmark JSONL record includes model hash, runtime configuration, llama.cpp version, and local hardware snapshot.")

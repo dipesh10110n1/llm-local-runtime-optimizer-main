@@ -1,0 +1,10 @@
+Spider database schema reference.
+DATABASE_ID: car_1
+Use this source only to identify tables and columns; do not invent schema.
+
+car_makers(Id, Maker, FullName, Country)
+car_names(MakeId, Model, Make)
+cars_data(Id, MPG, Cylinders, Edispl, Horsepower, Weight, Accelerate, Year)
+continents(ContId, Continent)
+countries(CountryId, CountryName, Continent)
+model_list(ModelId, Maker, Model)

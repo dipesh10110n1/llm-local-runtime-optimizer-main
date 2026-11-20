@@ -1,0 +1,12 @@
+Spider database schema reference.
+DATABASE_ID: dog_kennels
+Use this source only to identify tables and columns; do not invent schema.
+
+Breeds(breed_code, breed_name)
+Charges(charge_id, charge_type, charge_amount)
+Dogs(dog_id, owner_id, abandoned_yn, breed_code, size_code, name, age, date_of_birth, gender, weight, date_arrived, date_adopted, date_departed)
+Owners(owner_id, first_name, last_name, street, city, state, zip_code, email_address, home_phone, cell_number)
+Professionals(professional_id, role_code, first_name, street, city, state, zip_code, last_name, email_address, home_phone, cell_number)
+Sizes(size_code, size_description)
+Treatment_Types(treatment_type_code, treatment_type_description)
+Treatments(treatment_id, dog_id, professional_id, treatment_type_code, date_of_treatment, cost_of_treatment)

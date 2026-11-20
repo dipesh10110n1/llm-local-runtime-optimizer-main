@@ -1,0 +1,148 @@
+{
+  "experiment_id": "three_model_spider_20261119T145522Z_3bcb39c9",
+  "configuration": {
+    "threads": 4,
+    "context_size": 2048,
+    "gpu_layers": 0
+  },
+  "summary": {
+    "qwen2.5-0.5b-q4_k_m": {
+      "measured_samples": 15,
+      "failures": 0,
+      "task_quality": {
+        "count": 15,
+        "mean": 0.6,
+        "median": 1.0,
+        "stddev": 0.50709255283711,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "metrics": {
+        "wall_clock_seconds": {
+          "count": 15,
+          "mean": 0.8675553266657516,
+          "median": 0.6531242000637576,
+          "stddev": 0.7482990493253536,
+          "min": 0.2618058999069035,
+          "max": 2.3394368001027033
+        },
+        "ttft_seconds": {
+          "count": 15,
+          "mean": 0.20029186665390927,
+          "median": 0.17972110002301633,
+          "stddev": 0.07321592238388132,
+          "min": 0.04759360000025481,
+          "max": 0.3323304000077769
+        },
+        "generation_tokens_per_second": {
+          "count": 15,
+          "mean": 42.5550676569865,
+          "median": 43.30314340065189,
+          "stddev": 3.50317199368361,
+          "min": 37.3789855343326,
+          "max": 47.84030904839645
+        },
+        "peak_ram_mb": {
+          "count": 15,
+          "mean": 651.4919270833333,
+          "median": 651.7890625,
+          "stddev": 0.6416118043979419,
+          "min": 649.4296875,
+          "max": 651.89453125
+        }
+      }
+    },
+    "qwen2.5-1.5b-q4_k_m": {
+      "measured_samples": 15,
+      "failures": 0,
+      "task_quality": {
+        "count": 15,
+        "mean": 1.0,
+        "median": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "metrics": {
+        "wall_clock_seconds": {
+          "count": 15,
+          "mean": 1.6141342599953836,
+          "median": 1.3119502000045031,
+          "stddev": 0.8054301842978525,
+          "min": 0.8046879000030458,
+          "max": 3.8817644000519067
+        },
+        "ttft_seconds": {
+          "count": 15,
+          "mean": 0.4455161666730419,
+          "median": 0.45324830000754446,
+          "stddev": 0.16952091333817393,
+          "min": 0.0627404999686405,
+          "max": 0.7569074000930414
+        },
+        "generation_tokens_per_second": {
+          "count": 15,
+          "mean": 19.07910334063339,
+          "median": 20.22732819918794,
+          "stddev": 3.5821967499115543,
+          "min": 11.786346539017915,
+          "max": 23.155259099630904
+        },
+        "peak_ram_mb": {
+          "count": 15,
+          "mean": 1315.9557291666667,
+          "median": 1316.16015625,
+          "stddev": 0.6171798475640722,
+          "min": 1313.79296875,
+          "max": 1316.2421875
+        }
+      }
+    },
+    "qwen2.5-3b-q4_k_m": {
+      "measured_samples": 15,
+      "failures": 0,
+      "task_quality": {
+        "count": 15,
+        "mean": 1.0,
+        "median": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "metrics": {
+        "wall_clock_seconds": {
+          "count": 15,
+          "mean": 2.610760386652934,
+          "median": 2.6761371000902727,
+          "stddev": 1.0581160331275836,
+          "min": 1.113651999970898,
+          "max": 4.091331299976446
+        },
+        "ttft_seconds": {
+          "count": 15,
+          "mean": 0.9426334933222582,
+          "median": 0.9387623999500647,
+          "stddev": 0.3737310519721646,
+          "min": 0.12735610001254827,
+          "max": 1.5012248000130057
+        },
+        "generation_tokens_per_second": {
+          "count": 15,
+          "mean": 9.215042226826048,
+          "median": 9.562088232575485,
+          "stddev": 1.5000008689138506,
+          "min": 5.8456668306892,
+          "max": 11.229309996331759
+        },
+        "peak_ram_mb": {
+          "count": 15,
+          "mean": 2301.319791666667,
+          "median": 2301.48046875,
+          "stddev": 0.6575124487111962,
+          "min": 2299.0234375,
+          "max": 2301.66015625
+        }
+      }
+    }
+  }
+}

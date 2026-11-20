@@ -1,0 +1,54 @@
+{
+  "experiment_id": "full_matrix_spider_20261119T202745Z_0d41f100",
+  "dataset": "spider_dev",
+  "sample_limit": 3,
+  "trials": 3,
+  "models": [
+    "qwen2.5-0.5b-q4_k_m"
+  ],
+  "candidate_count": 0,
+  "matrix_dimensions": {
+    "threads": [
+      2,
+      4,
+      6,
+      8
+    ],
+    "contexts": [
+      1024,
+      2048,
+      4096
+    ],
+    "cache": [
+      "enabled",
+      "disabled"
+    ],
+    "compression": [
+      "none",
+      "whitespace",
+      "conservative"
+    ],
+    "retrieval": [
+      false,
+      true
+    ]
+  },
+  "sample_selection": "first development example from each database, then remaining source order",
+  "database_ids": [
+    "concert_singer",
+    "pets_1",
+    "car_1"
+  ],
+  "retrieval_corpus": "logs/retrieval_corpora/spider_schema_b54779f78302",
+  "summary": {
+    "configurations": {},
+    "success_count": 0,
+    "failure_count": 0,
+    "safety_skip_count": 144,
+    "deferred_count": 0
+  },
+  "hardware_profile_mirror": {
+    "status": "persisted"
+  },
+  "provenance_note": "Each trial stores model SHA-256, runtime configuration, llama.cpp version, and hardware snapshot in its raw JSONL record."
+}

@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from core.settings import ROOT
+from optimizer.calibrated_profiles import latest_profiles
 
 
 def historical_profiles() -> list[dict[str, Any]]:
@@ -25,4 +26,4 @@ def historical_profiles() -> list[dict[str, Any]]:
         latency_values = [row["latency_seconds"] for row in group if row["latency_seconds"] is not None]
         memory_values = [row["ram_mb"] for row in group if row["ram_mb"] is not None]
         profiles.append({"configuration_id": configuration_id, "model_id": group[0]["model_id"], "task_type": "all", "quality": None, "latency_seconds": statistics.mean(latency_values) if latency_values else None, "latency_median_seconds": statistics.median(latency_values) if latency_values else None, "latency_stddev_seconds": statistics.stdev(latency_values) if len(latency_values) > 1 else None, "ram_mb": statistics.mean(memory_values) if memory_values else None, "energy_joules": None, "sample_count": len(group), "measurement_kind": "measured"})
-    return profiles
+    return profiles + latest_profiles()

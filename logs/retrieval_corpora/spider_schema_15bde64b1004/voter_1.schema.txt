@@ -1,0 +1,7 @@
+Spider database schema reference.
+DATABASE_ID: voter_1
+Use this source only to identify tables and columns; do not invent schema.
+
+AREA_CODE_STATE(area_code, state)
+CONTESTANTS(contestant_number, contestant_name)
+VOTES(vote_id, phone_number, state, contestant_number, created)

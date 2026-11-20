@@ -1,0 +1,245 @@
+{
+  "experiment_id": "prompt_compression_20261119T175040Z_ccf1222e",
+  "dataset": "spider_dev",
+  "sample_limit": 1,
+  "trials": 1,
+  "models": [
+    "qwen2.5-0.5b-q4_k_m"
+  ],
+  "retrieval": "disabled",
+  "compression_modes": [
+    "none",
+    "whitespace",
+    "conservative"
+  ],
+  "token_count_note": "Exact local token counts are null when the active llama.cpp build does not expose /tokenize.",
+  "summary": {
+    "qwen2.5-0.5b-q4_k_m:none": {
+      "successful_requests": 1,
+      "task_quality": {
+        "count": 1,
+        "mean": 1.0,
+        "median": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "metrics": {
+        "end_to_end_seconds": {
+          "count": 1,
+          "mean": 0.6543979999842122,
+          "median": 0.6543979999842122,
+          "min": 0.6543979999842122,
+          "max": 0.6543979999842122
+        },
+        "ttft_seconds": {
+          "count": 1,
+          "mean": 0.4123935999814421,
+          "median": 0.4123935999814421,
+          "min": 0.4123935999814421,
+          "max": 0.4123935999814421
+        },
+        "prompt_processing_seconds": {
+          "count": 1,
+          "mean": 0.393659,
+          "median": 0.393659,
+          "min": 0.393659,
+          "max": 0.393659
+        },
+        "prompt_tokens_per_second": {
+          "count": 1,
+          "mean": 238.78534467648396,
+          "median": 238.78534467648396,
+          "min": 238.78534467648396,
+          "max": 238.78534467648396
+        },
+        "generation_tokens_per_second": {
+          "count": 1,
+          "mean": 33.0629063121221,
+          "median": 33.0629063121221,
+          "min": 33.0629063121221,
+          "max": 33.0629063121221
+        },
+        "peak_ram_mb": {
+          "count": 1,
+          "mean": 649.34765625,
+          "median": 649.34765625,
+          "min": 649.34765625,
+          "max": 649.34765625
+        },
+        "energy_proxy_joules": {
+          "count": 1,
+          "mean": 16.190058211147864,
+          "median": 16.190058211147864,
+          "min": 16.190058211147864,
+          "max": 16.190058211147864
+        }
+      },
+      "input_characters": {
+        "count": 1,
+        "mean": 354,
+        "median": 354,
+        "min": 354,
+        "max": 354
+      },
+      "exact_input_tokens": {
+        "count": 1,
+        "mean": 89,
+        "median": 89,
+        "min": 89,
+        "max": 89
+      }
+    },
+    "qwen2.5-0.5b-q4_k_m:whitespace": {
+      "successful_requests": 1,
+      "task_quality": {
+        "count": 1,
+        "mean": 1.0,
+        "median": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "metrics": {
+        "end_to_end_seconds": {
+          "count": 1,
+          "mean": 0.8739804000360891,
+          "median": 0.8739804000360891,
+          "min": 0.8739804000360891,
+          "max": 0.8739804000360891
+        },
+        "ttft_seconds": {
+          "count": 1,
+          "mean": 0.679958900087513,
+          "median": 0.679958900087513,
+          "min": 0.679958900087513,
+          "max": 0.679958900087513
+        },
+        "prompt_processing_seconds": {
+          "count": 1,
+          "mean": 0.661631,
+          "median": 0.661631,
+          "min": 0.661631,
+          "max": 0.661631
+        },
+        "prompt_tokens_per_second": {
+          "count": 1,
+          "mean": 142.07314953501273,
+          "median": 142.07314953501273,
+          "min": 142.07314953501273,
+          "max": 142.07314953501273
+        },
+        "generation_tokens_per_second": {
+          "count": 1,
+          "mean": 41.27264191339968,
+          "median": 41.27264191339968,
+          "min": 41.27264191339968,
+          "max": 41.27264191339968
+        },
+        "peak_ram_mb": {
+          "count": 1,
+          "mean": 649.2578125,
+          "median": 649.2578125,
+          "min": 649.2578125,
+          "max": 649.2578125
+        },
+        "energy_proxy_joules": {
+          "count": 1,
+          "mean": 20.192803036716167,
+          "median": 20.192803036716167,
+          "min": 20.192803036716167,
+          "max": 20.192803036716167
+        }
+      },
+      "input_characters": {
+        "count": 1,
+        "mean": 352,
+        "median": 352,
+        "min": 352,
+        "max": 352
+      },
+      "exact_input_tokens": {
+        "count": 1,
+        "mean": 89,
+        "median": 89,
+        "min": 89,
+        "max": 89
+      },
+      "quality_delta_vs_none": 0.0
+    },
+    "qwen2.5-0.5b-q4_k_m:conservative": {
+      "successful_requests": 1,
+      "task_quality": {
+        "count": 1,
+        "mean": 1.0,
+        "median": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "metrics": {
+        "end_to_end_seconds": {
+          "count": 1,
+          "mean": 0.6290950999828056,
+          "median": 0.6290950999828056,
+          "min": 0.6290950999828056,
+          "max": 0.6290950999828056
+        },
+        "ttft_seconds": {
+          "count": 1,
+          "mean": 0.4827489999588579,
+          "median": 0.4827489999588579,
+          "min": 0.4827489999588579,
+          "max": 0.4827489999588579
+        },
+        "prompt_processing_seconds": {
+          "count": 1,
+          "mean": 0.478949,
+          "median": 0.478949,
+          "min": 0.478949,
+          "max": 0.478949
+        },
+        "prompt_tokens_per_second": {
+          "count": 1,
+          "mean": 196.26306767526398,
+          "median": 196.26306767526398,
+          "min": 196.26306767526398,
+          "max": 196.26306767526398
+        },
+        "generation_tokens_per_second": {
+          "count": 1,
+          "mean": 54.809536859413534,
+          "median": 54.809536859413534,
+          "min": 54.809536859413534,
+          "max": 54.809536859413534
+        },
+        "peak_ram_mb": {
+          "count": 1,
+          "mean": 649.265625,
+          "median": 649.265625,
+          "min": 649.265625,
+          "max": 649.265625
+        },
+        "energy_proxy_joules": {
+          "count": 1,
+          "mean": 13.018551189507814,
+          "median": 13.018551189507814,
+          "min": 13.018551189507814,
+          "max": 13.018551189507814
+        }
+      },
+      "input_characters": {
+        "count": 1,
+        "mean": 354,
+        "median": 354,
+        "min": 354,
+        "max": 354
+      },
+      "exact_input_tokens": {
+        "count": 1,
+        "mean": 89,
+        "median": 89,
+        "min": 89,
+        "max": 89
+      },
+      "quality_delta_vs_none": 0.0
+    }
+  }
+}

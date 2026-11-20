@@ -1,0 +1,8 @@
+Spider database schema reference.
+DATABASE_ID: concert_singer
+Use this source only to identify tables and columns; do not invent schema.
+
+concert(concert_ID, concert_Name, Theme, Stadium_ID, Year)
+singer(Singer_ID, Name, Country, Song_Name, Song_release_year, Age, Is_male)
+singer_in_concert(concert_ID, Singer_ID)
+stadium(Stadium_ID, Location, Name, Capacity, Highest, Lowest, Average)

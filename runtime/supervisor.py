@@ -22,7 +22,9 @@ class RuntimeSwitchError(RuntimeError):
 
 def _read_state() -> dict[str, Any] | None:
     try:
-        return json.loads(STATE_PATH.read_text(encoding="utf-8"))
+        # Accept state created by either Python (plain UTF-8) or Windows
+        # PowerShell (which can prepend a UTF-8 BOM).
+        return json.loads(STATE_PATH.read_text(encoding="utf-8-sig"))
     except (FileNotFoundError, json.JSONDecodeError):
         return None
 
@@ -61,7 +63,26 @@ def _adopt_project_server() -> dict[str, Any] | None:
     return {"pid": matches[0].pid, "adopted": True} if len(matches) == 1 else None
 
 
-def ensure_runtime(model: dict[str, Any], configuration: dict[str, Any]) -> dict[str, Any]:
+def active_runtime_state() -> dict[str, Any] | None:
+    """Return Orbit's verified managed runtime state without changing it."""
+    state = _read_state()
+    if not state or not isinstance(state.get("pid"), int):
+        return None
+    try:
+        process = psutil.Process(state["pid"])
+        if "llama-server" not in process.name().lower() or not backend_health("llama.cpp"):
+            return None
+    except psutil.Error:
+        return None
+    return state
+
+
+def ensure_runtime(
+    model: dict[str, Any],
+    configuration: dict[str, Any],
+    server_arguments: list[str] | tuple[str, ...] | None = None,
+    force_restart: bool = False,
+) -> dict[str, Any]:
     """Ensure the selected GGUF/config is active. Only a server recorded by Orbit is stopped."""
     desired = {
         "model_id": model["model_id"],
@@ -69,9 +90,17 @@ def ensure_runtime(model: dict[str, Any], configuration: dict[str, Any]) -> dict
         "threads": int(configuration["threads"]),
         "context_size": int(configuration["context_size"]),
         "gpu_layers": int(configuration.get("gpu_layers", 0)),
+        # Keep launch switches in the state so a request for a different cache
+        # policy cannot accidentally reuse a server started with the old one.
+        "server_arguments": list(server_arguments or []),
     }
     state = _read_state()
-    if backend_health("llama.cpp") and state and all(state.get(key) == value for key, value in desired.items()):
+    if (
+        not force_restart
+        and backend_health("llama.cpp")
+        and state
+        and all(state.get(key) == value for key, value in desired.items())
+    ):
         return {**desired, "switched": False}
     if backend_health("llama.cpp") and not state:
         state = _adopt_project_server()
@@ -92,7 +121,7 @@ def ensure_runtime(model: dict[str, Any], configuration: dict[str, Any]) -> dict
         executable, "-m", str(model_path), "--host", "127.0.0.1", "--port", "9931",
         "-t", str(desired["threads"]), "-c", str(desired["context_size"]),
         "-ngl", str(desired["gpu_layers"]),
-    ]
+    ] + desired["server_arguments"]
     process = subprocess.Popen(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     _write_state({**desired, "pid": process.pid})
     deadline = time.monotonic() + 90

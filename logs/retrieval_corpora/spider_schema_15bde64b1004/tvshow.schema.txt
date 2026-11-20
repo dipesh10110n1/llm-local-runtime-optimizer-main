@@ -1,0 +1,7 @@
+Spider database schema reference.
+DATABASE_ID: tvshow
+Use this source only to identify tables and columns; do not invent schema.
+
+Cartoon(id, Title, Directed_by, Written_by, Original_air_date, Production_code, Channel)
+TV_Channel(id, series_name, Country, Language, Content, Pixel_aspect_ratio_PAR, Hight_definition_TV, Pay_per_view_PPV, Package_Option)
+TV_series(id, Episode, Air_Date, Rating, Share, 18_49_Rating_Share, Viewers_m, Weekly_Rank, Channel)

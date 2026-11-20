@@ -1,0 +1,148 @@
+{
+  "experiment_id": "three_model_spider_20261119T145404Z_a2f4480c",
+  "configuration": {
+    "threads": 4,
+    "context_size": 2048,
+    "gpu_layers": 0
+  },
+  "summary": {
+    "qwen2.5-0.5b-q4_k_m": {
+      "measured_samples": 1,
+      "failures": 0,
+      "task_quality": {
+        "count": 1,
+        "mean": 1.0,
+        "median": 1.0,
+        "stddev": null,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "metrics": {
+        "wall_clock_seconds": {
+          "count": 1,
+          "mean": 0.20872599992435426,
+          "median": 0.20872599992435426,
+          "stddev": null,
+          "min": 0.20872599992435426,
+          "max": 0.20872599992435426
+        },
+        "ttft_seconds": {
+          "count": 1,
+          "mean": 0.04741859994828701,
+          "median": 0.04741859994828701,
+          "stddev": null,
+          "min": 0.04741859994828701,
+          "max": 0.04741859994828701
+        },
+        "generation_tokens_per_second": {
+          "count": 1,
+          "mean": 43.508798100530186,
+          "median": 43.508798100530186,
+          "stddev": null,
+          "min": 43.508798100530186,
+          "max": 43.508798100530186
+        },
+        "peak_ram_mb": {
+          "count": 1,
+          "mean": 649.515625,
+          "median": 649.515625,
+          "stddev": null,
+          "min": 649.515625,
+          "max": 649.515625
+        }
+      }
+    },
+    "qwen2.5-1.5b-q4_k_m": {
+      "measured_samples": 1,
+      "failures": 0,
+      "task_quality": {
+        "count": 1,
+        "mean": 0.0,
+        "median": 0.0,
+        "stddev": null,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "metrics": {
+        "wall_clock_seconds": {
+          "count": 1,
+          "mean": 0.31323289999272674,
+          "median": 0.31323289999272674,
+          "stddev": null,
+          "min": 0.31323289999272674,
+          "max": 0.31323289999272674
+        },
+        "ttft_seconds": {
+          "count": 1,
+          "mean": 0.04326830001082271,
+          "median": 0.04326830001082271,
+          "stddev": null,
+          "min": 0.04326830001082271,
+          "max": 0.04326830001082271
+        },
+        "generation_tokens_per_second": {
+          "count": 1,
+          "mean": 25.94254837358752,
+          "median": 25.94254837358752,
+          "stddev": null,
+          "min": 25.94254837358752,
+          "max": 25.94254837358752
+        },
+        "peak_ram_mb": {
+          "count": 1,
+          "mean": 1313.6171875,
+          "median": 1313.6171875,
+          "stddev": null,
+          "min": 1313.6171875,
+          "max": 1313.6171875
+        }
+      }
+    },
+    "qwen2.5-3b-q4_k_m": {
+      "measured_samples": 1,
+      "failures": 0,
+      "task_quality": {
+        "count": 1,
+        "mean": 1.0,
+        "median": 1.0,
+        "stddev": null,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "metrics": {
+        "wall_clock_seconds": {
+          "count": 1,
+          "mean": 0.6344144999748096,
+          "median": 0.6344144999748096,
+          "stddev": null,
+          "min": 0.6344144999748096,
+          "max": 0.6344144999748096
+        },
+        "ttft_seconds": {
+          "count": 1,
+          "mean": 0.08443339995574206,
+          "median": 0.08443339995574206,
+          "stddev": null,
+          "min": 0.08443339995574206,
+          "max": 0.08443339995574206
+        },
+        "generation_tokens_per_second": {
+          "count": 1,
+          "mean": 12.733407914722548,
+          "median": 12.733407914722548,
+          "stddev": null,
+          "min": 12.733407914722548,
+          "max": 12.733407914722548
+        },
+        "peak_ram_mb": {
+          "count": 1,
+          "mean": 2299.30078125,
+          "median": 2299.30078125,
+          "stddev": null,
+          "min": 2299.30078125,
+          "max": 2299.30078125
+        }
+      }
+    }
+  }
+}

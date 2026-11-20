@@ -1,0 +1,200 @@
+{
+  "completed_configurations": [
+    {
+      "configuration": {
+        "configuration_id": "qwen2.5-0.5b-q4_k_m:t2:c1024:cpu",
+        "backend": "llama.cpp",
+        "threads": 2,
+        "context_size": 1024,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "samples": 6,
+      "quality_mean": 1.0,
+      "latency_mean": 0.5221334500238299,
+      "throughput_mean": 35.26102632301616,
+      "latency_stddev": 0.21800774510003448
+    },
+    {
+      "configuration": {
+        "configuration_id": "qwen2.5-0.5b-q4_k_m:t4:c1024:cpu",
+        "backend": "llama.cpp",
+        "threads": 4,
+        "context_size": 1024,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "samples": 6,
+      "quality_mean": 1.0,
+      "latency_mean": 0.4293259333547515,
+      "throughput_mean": 43.62025966573142,
+      "latency_stddev": 0.1671818413106934
+    },
+    {
+      "configuration": {
+        "configuration_id": "qwen2.5-0.5b-q4_k_m:t6:c1024:cpu",
+        "backend": "llama.cpp",
+        "threads": 6,
+        "context_size": 1024,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "samples": 6,
+      "quality_mean": 1.0,
+      "latency_mean": 0.5218190500163473,
+      "throughput_mean": 35.086770748400596,
+      "latency_stddev": 0.21181343689155066
+    },
+    {
+      "configuration": {
+        "configuration_id": "qwen2.5-0.5b-q4_k_m:t8:c1024:cpu",
+        "backend": "llama.cpp",
+        "threads": 8,
+        "context_size": 1024,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "samples": 6,
+      "quality_mean": 1.0,
+      "latency_mean": 0.5361805332941003,
+      "throughput_mean": 35.312290307474456,
+      "latency_stddev": 0.17280058812593893
+    },
+    {
+      "configuration": {
+        "configuration_id": "qwen2.5-0.5b-q4_k_m:t2:c2048:cpu",
+        "backend": "llama.cpp",
+        "threads": 2,
+        "context_size": 2048,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "samples": 6,
+      "quality_mean": 1.0,
+      "latency_mean": 0.6032251500097724,
+      "throughput_mean": 29.10504247289615,
+      "latency_stddev": 0.24411170896308504
+    },
+    {
+      "configuration": {
+        "configuration_id": "qwen2.5-0.5b-q4_k_m:t4:c2048:cpu",
+        "backend": "llama.cpp",
+        "threads": 4,
+        "context_size": 2048,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "samples": 6,
+      "quality_mean": 1.0,
+      "latency_mean": 0.6071287500283992,
+      "throughput_mean": 32.914156297903645,
+      "latency_stddev": 0.3257166331301229
+    },
+    {
+      "configuration": {
+        "configuration_id": "qwen2.5-0.5b-q4_k_m:t6:c2048:cpu",
+        "backend": "llama.cpp",
+        "threads": 6,
+        "context_size": 2048,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "samples": 6,
+      "quality_mean": 1.0,
+      "latency_mean": 0.47838466668811935,
+      "throughput_mean": 36.62724736666268,
+      "latency_stddev": 0.1752161160324013
+    },
+    {
+      "configuration": {
+        "configuration_id": "qwen2.5-0.5b-q4_k_m:t8:c2048:cpu",
+        "backend": "llama.cpp",
+        "threads": 8,
+        "context_size": 2048,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "samples": 6,
+      "quality_mean": 1.0,
+      "latency_mean": 0.4632083166507073,
+      "throughput_mean": 38.36073803919567,
+      "latency_stddev": 0.2010073951830383
+    },
+    {
+      "configuration": {
+        "configuration_id": "qwen2.5-0.5b-q4_k_m:t2:c4096:cpu",
+        "backend": "llama.cpp",
+        "threads": 2,
+        "context_size": 4096,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "samples": 6,
+      "quality_mean": 1.0,
+      "latency_mean": 0.46127131664737436,
+      "throughput_mean": 38.02447652934773,
+      "latency_stddev": 0.15531186433037092
+    },
+    {
+      "configuration": {
+        "configuration_id": "qwen2.5-0.5b-q4_k_m:t4:c4096:cpu",
+        "backend": "llama.cpp",
+        "threads": 4,
+        "context_size": 4096,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "samples": 6,
+      "quality_mean": 1.0,
+      "latency_mean": 0.5216092999908142,
+      "throughput_mean": 37.385003844678394,
+      "latency_stddev": 0.25276605004386193
+    },
+    {
+      "configuration": {
+        "configuration_id": "qwen2.5-0.5b-q4_k_m:t6:c4096:cpu",
+        "backend": "llama.cpp",
+        "threads": 6,
+        "context_size": 4096,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "samples": 6,
+      "quality_mean": 1.0,
+      "latency_mean": 0.4361759499879554,
+      "throughput_mean": 42.548631252397215,
+      "latency_stddev": 0.17302905111660227
+    },
+    {
+      "configuration": {
+        "configuration_id": "qwen2.5-0.5b-q4_k_m:t8:c4096:cpu",
+        "backend": "llama.cpp",
+        "threads": 8,
+        "context_size": 4096,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "samples": 6,
+      "quality_mean": 1.0,
+      "latency_mean": 0.43621221663973603,
+      "throughput_mean": 43.32754091617639,
+      "latency_stddev": 0.17068353199485484
+    }
+  ],
+  "recommendation": {
+    "configuration": {
+      "configuration_id": "qwen2.5-0.5b-q4_k_m:t4:c1024:cpu",
+      "backend": "llama.cpp",
+      "threads": 4,
+      "context_size": 1024,
+      "gpu_layers": 0,
+      "cache": "server-default"
+    },
+    "samples": 6,
+    "quality_mean": 1.0,
+    "latency_mean": 0.4293259333547515,
+    "throughput_mean": 43.62025966573142,
+    "latency_stddev": 0.1671818413106934
+  },
+  "skipped_or_failed": []
+}

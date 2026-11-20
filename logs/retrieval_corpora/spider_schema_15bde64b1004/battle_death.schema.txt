@@ -1,0 +1,7 @@
+Spider database schema reference.
+DATABASE_ID: battle_death
+Use this source only to identify tables and columns; do not invent schema.
+
+battle(id, name, date, bulgarian_commander, latin_commander, result)
+death(caused_by_ship_id, id, note, killed, injured)
+ship(lost_in_battle, id, name, tonnage, ship_type, location, disposition_of_ship)

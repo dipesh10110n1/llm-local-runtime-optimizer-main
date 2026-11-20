@@ -1,0 +1,198 @@
+{
+  "completed_configurations": [],
+  "recommendation": null,
+  "skipped_or_failed": [
+    {
+      "experiment_id": "context_thread_20261119T145804Z_23bfbfe8",
+      "timestamp": "2026-11-19T14:58:04.701027+00:00",
+      "phase": "skipped",
+      "success": false,
+      "model_id": "qwen2.5-1.5b-q4_k_m",
+      "configuration": {
+        "configuration_id": "qwen2.5-1.5b-q4_k_m:t2:c1024:cpu",
+        "backend": "llama.cpp",
+        "threads": 2,
+        "context_size": 1024,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "error": "RAM safety skip: estimated 1839 MiB plus 512 MiB reserve; available 1519 MiB"
+    },
+    {
+      "experiment_id": "context_thread_20261119T145804Z_23bfbfe8",
+      "timestamp": "2026-11-19T14:58:04.701027+00:00",
+      "phase": "skipped",
+      "success": false,
+      "model_id": "qwen2.5-1.5b-q4_k_m",
+      "configuration": {
+        "configuration_id": "qwen2.5-1.5b-q4_k_m:t4:c1024:cpu",
+        "backend": "llama.cpp",
+        "threads": 4,
+        "context_size": 1024,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "error": "RAM safety skip: estimated 1839 MiB plus 512 MiB reserve; available 1519 MiB"
+    },
+    {
+      "experiment_id": "context_thread_20261119T145804Z_23bfbfe8",
+      "timestamp": "2026-11-19T14:58:04.701027+00:00",
+      "phase": "skipped",
+      "success": false,
+      "model_id": "qwen2.5-1.5b-q4_k_m",
+      "configuration": {
+        "configuration_id": "qwen2.5-1.5b-q4_k_m:t6:c1024:cpu",
+        "backend": "llama.cpp",
+        "threads": 6,
+        "context_size": 1024,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "error": "RAM safety skip: estimated 1839 MiB plus 512 MiB reserve; available 1519 MiB"
+    },
+    {
+      "experiment_id": "context_thread_20261119T145804Z_23bfbfe8",
+      "timestamp": "2026-11-19T14:58:04.701027+00:00",
+      "phase": "skipped",
+      "success": false,
+      "model_id": "qwen2.5-1.5b-q4_k_m",
+      "configuration": {
+        "configuration_id": "qwen2.5-1.5b-q4_k_m:t8:c1024:cpu",
+        "backend": "llama.cpp",
+        "threads": 8,
+        "context_size": 1024,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "error": "RAM safety skip: estimated 1839 MiB plus 512 MiB reserve; available 1519 MiB"
+    },
+    {
+      "experiment_id": "context_thread_20261119T145804Z_23bfbfe8",
+      "timestamp": "2026-11-19T14:58:04.701027+00:00",
+      "phase": "skipped",
+      "success": false,
+      "model_id": "qwen2.5-1.5b-q4_k_m",
+      "configuration": {
+        "configuration_id": "qwen2.5-1.5b-q4_k_m:t2:c2048:cpu",
+        "backend": "llama.cpp",
+        "threads": 2,
+        "context_size": 2048,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "error": "RAM safety skip: estimated 1992 MiB plus 512 MiB reserve; available 1519 MiB"
+    },
+    {
+      "experiment_id": "context_thread_20261119T145804Z_23bfbfe8",
+      "timestamp": "2026-11-19T14:58:04.701027+00:00",
+      "phase": "skipped",
+      "success": false,
+      "model_id": "qwen2.5-1.5b-q4_k_m",
+      "configuration": {
+        "configuration_id": "qwen2.5-1.5b-q4_k_m:t4:c2048:cpu",
+        "backend": "llama.cpp",
+        "threads": 4,
+        "context_size": 2048,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "error": "RAM safety skip: estimated 1992 MiB plus 512 MiB reserve; available 1519 MiB"
+    },
+    {
+      "experiment_id": "context_thread_20261119T145804Z_23bfbfe8",
+      "timestamp": "2026-11-19T14:58:04.701027+00:00",
+      "phase": "skipped",
+      "success": false,
+      "model_id": "qwen2.5-1.5b-q4_k_m",
+      "configuration": {
+        "configuration_id": "qwen2.5-1.5b-q4_k_m:t6:c2048:cpu",
+        "backend": "llama.cpp",
+        "threads": 6,
+        "context_size": 2048,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "error": "RAM safety skip: estimated 1992 MiB plus 512 MiB reserve; available 1518 MiB"
+    },
+    {
+      "experiment_id": "context_thread_20261119T145804Z_23bfbfe8",
+      "timestamp": "2026-11-19T14:58:04.701027+00:00",
+      "phase": "skipped",
+      "success": false,
+      "model_id": "qwen2.5-1.5b-q4_k_m",
+      "configuration": {
+        "configuration_id": "qwen2.5-1.5b-q4_k_m:t8:c2048:cpu",
+        "backend": "llama.cpp",
+        "threads": 8,
+        "context_size": 2048,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "error": "RAM safety skip: estimated 1992 MiB plus 512 MiB reserve; available 1518 MiB"
+    },
+    {
+      "experiment_id": "context_thread_20261119T145804Z_23bfbfe8",
+      "timestamp": "2026-11-19T14:58:04.701027+00:00",
+      "phase": "skipped",
+      "success": false,
+      "model_id": "qwen2.5-1.5b-q4_k_m",
+      "configuration": {
+        "configuration_id": "qwen2.5-1.5b-q4_k_m:t2:c4096:cpu",
+        "backend": "llama.cpp",
+        "threads": 2,
+        "context_size": 4096,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "error": "RAM safety skip: estimated 2300 MiB plus 512 MiB reserve; available 1518 MiB"
+    },
+    {
+      "experiment_id": "context_thread_20261119T145804Z_23bfbfe8",
+      "timestamp": "2026-11-19T14:58:04.701027+00:00",
+      "phase": "skipped",
+      "success": false,
+      "model_id": "qwen2.5-1.5b-q4_k_m",
+      "configuration": {
+        "configuration_id": "qwen2.5-1.5b-q4_k_m:t4:c4096:cpu",
+        "backend": "llama.cpp",
+        "threads": 4,
+        "context_size": 4096,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "error": "RAM safety skip: estimated 2300 MiB plus 512 MiB reserve; available 1518 MiB"
+    },
+    {
+      "experiment_id": "context_thread_20261119T145804Z_23bfbfe8",
+      "timestamp": "2026-11-19T14:58:04.701027+00:00",
+      "phase": "skipped",
+      "success": false,
+      "model_id": "qwen2.5-1.5b-q4_k_m",
+      "configuration": {
+        "configuration_id": "qwen2.5-1.5b-q4_k_m:t6:c4096:cpu",
+        "backend": "llama.cpp",
+        "threads": 6,
+        "context_size": 4096,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "error": "RAM safety skip: estimated 2300 MiB plus 512 MiB reserve; available 1518 MiB"
+    },
+    {
+      "experiment_id": "context_thread_20261119T145804Z_23bfbfe8",
+      "timestamp": "2026-11-19T14:58:04.701027+00:00",
+      "phase": "skipped",
+      "success": false,
+      "model_id": "qwen2.5-1.5b-q4_k_m",
+      "configuration": {
+        "configuration_id": "qwen2.5-1.5b-q4_k_m:t8:c4096:cpu",
+        "backend": "llama.cpp",
+        "threads": 8,
+        "context_size": 4096,
+        "gpu_layers": 0,
+        "cache": "server-default"
+      },
+      "error": "RAM safety skip: estimated 2300 MiB plus 512 MiB reserve; available 1518 MiB"
+    }
+  ]
+}

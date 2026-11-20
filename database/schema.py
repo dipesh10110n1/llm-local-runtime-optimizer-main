@@ -116,7 +116,10 @@ class OptimizationRecommendation(Base):
 
 
 def make_engine(url: str):
-    return create_engine(url, future=True, pool_pre_ping=True)
+    connect_args = {}
+    if "pymysql" in url:
+        connect_args["connect_timeout"] = 2
+    return create_engine(url, future=True, pool_pre_ping=True, connect_args=connect_args)
 
 
 def create_schema(url: str) -> None:

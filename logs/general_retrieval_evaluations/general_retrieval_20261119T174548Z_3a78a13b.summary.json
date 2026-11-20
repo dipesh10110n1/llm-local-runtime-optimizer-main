@@ -1,0 +1,162 @@
+{
+  "experiment_id": "general_retrieval_20261119T174548Z_3a78a13b",
+  "dataset": "orbit_project_retrieval",
+  "question_count": 10,
+  "trials": 1,
+  "corpus_dir": "datasets/retrieval",
+  "document_count": 5,
+  "evaluation_note": "Correctness, relevance, and support are deterministic local lexical measures, not a semantic judge.",
+  "summary": {
+    "qwen2.5-0.5b-q4_k_m:retrieval_off": {
+      "successful_requests": 10,
+      "correctness": {
+        "count": 10,
+        "mean": 0.15,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.5
+      },
+      "relevance": {
+        "count": 10,
+        "mean": 0.1878809198956675,
+        "median": 0.18181818181818182,
+        "min": 0.0,
+        "max": 0.4285714285714286
+      },
+      "support": {
+        "count": 10,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "source_retrieval_rate": {
+        "count": 10,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "metrics": {
+        "end_to_end_seconds": {
+          "count": 10,
+          "mean": 0.7703643699642271,
+          "median": 0.7929284499841742,
+          "min": 0.41414090001489967,
+          "max": 0.992544399923645
+        },
+        "ttft_seconds": {
+          "count": 10,
+          "mean": 0.1480564299970865,
+          "median": 0.14293820003513247,
+          "min": 0.12079169997014105,
+          "max": 0.21015820000320673
+        },
+        "generation_tokens_per_second": {
+          "count": 10,
+          "mean": 46.579346259133594,
+          "median": 47.10757749059376,
+          "min": 39.63525338433922,
+          "max": 50.69543270362364
+        },
+        "peak_ram_mb": {
+          "count": 10,
+          "mean": 650.9328125,
+          "median": 651.029296875,
+          "min": 650.45703125,
+          "max": 651.1171875
+        },
+        "energy_proxy_joules": {
+          "count": 10,
+          "mean": 17.85651990625291,
+          "median": 17.61324073450017,
+          "min": 8.31917036818819,
+          "max": 28.83080285883472
+        }
+      },
+      "input_tokens": {
+        "count": 10,
+        "mean": 10,
+        "median": 10.5,
+        "min": 7,
+        "max": 14
+      }
+    },
+    "qwen2.5-0.5b-q4_k_m:retrieval_on": {
+      "successful_requests": 10,
+      "correctness": {
+        "count": 10,
+        "mean": 0.55,
+        "median": 0.75,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "relevance": {
+        "count": 10,
+        "mean": 0.40565097026896685,
+        "median": 0.3852813852813853,
+        "min": 0.07692307692307691,
+        "max": 0.8181818181818182
+      },
+      "support": {
+        "count": 10,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "source_retrieval_rate": {
+        "count": 10,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "metrics": {
+        "end_to_end_seconds": {
+          "count": 10,
+          "mean": 1.0245049200137146,
+          "median": 0.9827530000475235,
+          "min": 0.5050897999899462,
+          "max": 2.1254954000469297
+        },
+        "ttft_seconds": {
+          "count": 10,
+          "mean": 0.43973958999849855,
+          "median": 0.40103079995606095,
+          "min": 0.18403370003215969,
+          "max": 0.9708577999845147
+        },
+        "generation_tokens_per_second": {
+          "count": 10,
+          "mean": 33.66883749977229,
+          "median": 33.769832920533936,
+          "min": 21.658260373873553,
+          "max": 42.372240129538
+        },
+        "peak_ram_mb": {
+          "count": 10,
+          "mean": 675.499609375,
+          "median": 674.259765625,
+          "min": 668.03515625,
+          "max": 681.51953125
+        },
+        "energy_proxy_joules": {
+          "count": 10,
+          "mean": 30.96079647836136,
+          "median": 24.649639183053903,
+          "min": 13.218744663002225,
+          "max": 82.59362551729421
+        }
+      },
+      "input_tokens": {
+        "count": 10,
+        "mean": 254.2,
+        "median": 257.5,
+        "min": 223,
+        "max": 265
+      },
+      "correctness_delta_vs_off": 0.4
+    }
+  }
+}

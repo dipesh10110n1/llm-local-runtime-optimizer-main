@@ -1,0 +1,6 @@
+Spider database schema reference.
+DATABASE_ID: singer
+Use this source only to identify tables and columns; do not invent schema.
+
+singer(Singer_ID, Name, Birth_Year, Net_Worth_Millions, Citizenship)
+song(Song_ID, Title, Singer_ID, Sales, Highest_Position)

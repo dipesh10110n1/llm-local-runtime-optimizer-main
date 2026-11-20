@@ -75,7 +75,7 @@ def instruction_following(answer: str, metadata: dict[str, Any]) -> dict[str, An
 def evaluate(sample: dict[str, Any], answer: str) -> dict[str, Any]:
     kind = sample["evaluation_type"]
     if kind == "exact_match":
-        if sample.get("dataset") == "mmlu": return mmlu_exact(answer, str(sample["reference_answer"]), sample.get("metadata", {}))
+        if str(sample.get("dataset", "")).startswith("mmlu"): return mmlu_exact(answer, str(sample["reference_answer"]), sample.get("metadata", {}))
         return exact_match(answer, str(sample["reference_answer"]))
     if kind == "numeric_exact": return numeric_exact(answer, str(sample["reference_answer"]))
     if kind == "rouge": return rouge1(answer, str(sample["reference_answer"]))

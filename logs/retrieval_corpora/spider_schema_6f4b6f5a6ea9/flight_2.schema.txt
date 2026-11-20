@@ -1,0 +1,7 @@
+Spider database schema reference.
+DATABASE_ID: flight_2
+Use this source only to identify tables and columns; do not invent schema.
+
+airlines(uid, Airline, Abbreviation, Country)
+airports(City, AirportCode, AirportName, Country, CountryAbbrev)
+flights(Airline, FlightNo, SourceAirport, DestAirport)

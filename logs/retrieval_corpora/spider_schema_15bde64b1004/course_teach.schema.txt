@@ -1,0 +1,7 @@
+Spider database schema reference.
+DATABASE_ID: course_teach
+Use this source only to identify tables and columns; do not invent schema.
+
+course(Course_ID, Staring_Date, Course)
+course_arrange(Course_ID, Teacher_ID, Grade)
+teacher(Teacher_ID, Name, Age, Hometown)

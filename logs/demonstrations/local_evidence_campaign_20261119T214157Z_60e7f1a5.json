@@ -1,0 +1,113 @@
+{
+  "campaign_id": "local_evidence_campaign_20261119T214157Z_60e7f1a5",
+  "started_at": "2026-11-19T21:41:57.750806+00:00",
+  "plan": {
+    "local_only": true,
+    "models_requested": [
+      "qwen2.5-0.5b-q4_k_m",
+      "qwen2.5-1.5b-q4_k_m",
+      "qwen2.5-3b-q4_k_m"
+    ],
+    "models_available": [
+      "qwen2.5-0.5b-q4_k_m",
+      "qwen2.5-1.5b-q4_k_m",
+      "qwen2.5-3b-q4_k_m"
+    ],
+    "spider": {
+      "sample_limit": 25,
+      "trials": 3,
+      "max_configurations_per_model": 6,
+      "estimated_measured_requests_per_model": 450
+    },
+    "controlled_studies": {
+      "thread_context_models": [
+        "qwen2.5-1.5b-q4_k_m",
+        "qwen2.5-3b-q4_k_m"
+      ],
+      "cache_models": [
+        "qwen2.5-1.5b-q4_k_m",
+        "qwen2.5-3b-q4_k_m"
+      ],
+      "general_datasets": [
+        {
+          "dataset": "gsm8k",
+          "prepared": false,
+          "samples": 0,
+          "manifest_present": false,
+          "path": "datasets\\processed\\gsm8k.jsonl"
+        },
+        {
+          "dataset": "mmlu",
+          "prepared": false,
+          "samples": 0,
+          "manifest_present": false,
+          "path": "datasets\\processed\\mmlu.jsonl"
+        },
+        {
+          "dataset": "ifeval",
+          "prepared": false,
+          "samples": 0,
+          "manifest_present": false,
+          "path": "datasets\\processed\\ifeval.jsonl"
+        }
+      ]
+    },
+    "physical_energy": {
+      "actual_energy_available": false,
+      "measurement_kind": "unavailable",
+      "energy_joules": null,
+      "supported_sources": [
+        "external wall-power meter with cumulative energy export",
+        "hardware counter adapter that supplies cumulative joules"
+      ],
+      "reason": "No configured local adapter currently supplies actual cumulative energy readings.",
+      "proxy_note": "CPU utilisation energy remains an estimate and is never presented as physical-meter energy.",
+      "configured_meter_path": null,
+      "meter_export_exists": false
+    },
+    "provenance": "Raw benchmark JSONL records retain model hash, runtime configuration, llama.cpp version, and local hardware snapshot.",
+    "execution_note": "All stages run sequentially on loopback. --execute can take a long time and checkpoints the Spider JSONL after every configuration."
+  },
+  "stages": [
+    {
+      "name": "spider_matrix:qwen2.5-0.5b-q4_k_m",
+      "status": "completed",
+      "result": [
+        "C:\\Users\\dipesh\\Desktop\\llm local runtime optimizer - Copy (2)\\local-llm-runtime-optimizer\\logs\\full_matrix_benchmarks\\full_matrix_spider_20261119T214159Z_22fef7c6.jsonl",
+        "C:\\Users\\dipesh\\Desktop\\llm local runtime optimizer - Copy (2)\\local-llm-runtime-optimizer\\logs\\full_matrix_benchmarks\\full_matrix_spider_20261119T214159Z_22fef7c6.summary.json"
+      ]
+    },
+    {
+      "name": "spider_matrix:qwen2.5-1.5b-q4_k_m",
+      "status": "completed",
+      "result": [
+        "C:\\Users\\dipesh\\Desktop\\llm local runtime optimizer - Copy (2)\\local-llm-runtime-optimizer\\logs\\full_matrix_benchmarks\\full_matrix_spider_20261119T215614Z_604b29d2.jsonl",
+        "C:\\Users\\dipesh\\Desktop\\llm local runtime optimizer - Copy (2)\\local-llm-runtime-optimizer\\logs\\full_matrix_benchmarks\\full_matrix_spider_20261119T215614Z_604b29d2.summary.json"
+      ]
+    },
+    {
+      "name": "spider_matrix:qwen2.5-3b-q4_k_m",
+      "status": "completed",
+      "result": [
+        "C:\\Users\\dipesh\\Desktop\\llm local runtime optimizer - Copy (2)\\local-llm-runtime-optimizer\\logs\\full_matrix_benchmarks\\full_matrix_spider_20261119T223014Z_b3816c04.jsonl",
+        "C:\\Users\\dipesh\\Desktop\\llm local runtime optimizer - Copy (2)\\local-llm-runtime-optimizer\\logs\\full_matrix_benchmarks\\full_matrix_spider_20261119T223014Z_b3816c04.summary.json"
+      ]
+    },
+    {
+      "name": "thread_context:qwen2.5-1.5b-q4_k_m",
+      "status": "completed",
+      "result": [
+        "C:\\Users\\dipesh\\Desktop\\llm local runtime optimizer - Copy (2)\\local-llm-runtime-optimizer\\logs\\context_thread_calibrations\\context_thread_20261119T223024Z_322f81af.jsonl",
+        "C:\\Users\\dipesh\\Desktop\\llm local runtime optimizer - Copy (2)\\local-llm-runtime-optimizer\\logs\\context_thread_calibrations\\context_thread_20261119T223024Z_322f81af.summary.json"
+      ]
+    },
+    {
+      "name": "cache:qwen2.5-1.5b-q4_k_m",
+      "status": "completed",
+      "result": [
+        "C:\\Users\\dipesh\\Desktop\\llm local runtime optimizer - Copy (2)\\local-llm-runtime-optimizer\\logs\\cache_prompt_experiments\\cache_prompt_20261119T223024Z_8ca39ab1.jsonl",
+        "C:\\Users\\dipesh\\Desktop\\llm local runtime optimizer - Copy (2)\\local-llm-runtime-optimizer\\logs\\cache_prompt_experiments\\cache_prompt_20261119T223024Z_8ca39ab1.summary.json"
+      ]
+    }
+  ]
+}

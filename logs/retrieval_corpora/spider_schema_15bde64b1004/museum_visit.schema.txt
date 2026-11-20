@@ -1,0 +1,7 @@
+Spider database schema reference.
+DATABASE_ID: museum_visit
+Use this source only to identify tables and columns; do not invent schema.
+
+museum(Museum_ID, Name, Num_of_Staff, Open_Year)
+visit(Museum_ID, visitor_ID, Num_of_Ticket, Total_spent)
+visitor(ID, Name, Level_of_membership, Age)

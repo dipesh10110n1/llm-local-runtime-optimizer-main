@@ -1,0 +1,8 @@
+Spider database schema reference.
+DATABASE_ID: cre_Doc_Template_Mgt
+Use this source only to identify tables and columns; do not invent schema.
+
+Documents(Document_ID, Template_ID, Document_Name, Document_Description, Other_Details)
+Paragraphs(Paragraph_ID, Document_ID, Paragraph_Text, Other_Details)
+Ref_Template_Types(Template_Type_Code, Template_Type_Description)
+Templates(Template_ID, Version_Number, Template_Type_Code, Date_Effective_From, Date_Effective_To, Template_Details)

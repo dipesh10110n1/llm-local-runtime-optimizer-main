@@ -1,0 +1,217 @@
+{
+  "experiment_id": "quantization_spider_20261119T155137Z_a01191ed",
+  "dataset": "spider_dev",
+  "sample_limit": 10,
+  "trials": 2,
+  "sample_selection": "first development example from each database, then remaining examples in source order",
+  "database_ids": [
+    "concert_singer",
+    "pets_1",
+    "car_1",
+    "flight_2",
+    "employee_hire_evaluation",
+    "cre_Doc_Template_Mgt",
+    "course_teach",
+    "museum_visit",
+    "wta_1",
+    "battle_death"
+  ],
+  "preflight": {
+    "model_family": "Qwen2.5-1.5B-Instruct",
+    "architecture_requirement": "same base model and compatible GGUF tokenizer",
+    "disk_free_gib": 106.77,
+    "quantization_tool_available": true,
+    "variants": [
+      {
+        "quantization": "Q4_K_M",
+        "path": "models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+        "exists": true,
+        "file_size_bytes": 1117320736,
+        "file_size_gib": 1.041,
+        "gguf_header_valid": true,
+        "status": "ready"
+      },
+      {
+        "quantization": "Q5_K_M",
+        "path": "models/quantizations/qwen2.5-1.5b-instruct-q5_k_m.gguf",
+        "exists": true,
+        "file_size_bytes": 1285494304,
+        "file_size_gib": 1.197,
+        "gguf_header_valid": true,
+        "status": "ready"
+      },
+      {
+        "quantization": "Q6_K",
+        "path": "models/quantizations/qwen2.5-1.5b-instruct-q6_k.gguf",
+        "exists": true,
+        "file_size_bytes": 1464178720,
+        "file_size_gib": 1.364,
+        "gguf_header_valid": true,
+        "status": "ready"
+      }
+    ],
+    "download_or_conversion_authorization_required": true,
+    "source_status": "Official acquisition metadata is recorded in docs/MODEL_SOURCES.md; this preflight itself performs no network access."
+  },
+  "summary": {
+    "Q4_K_M": {
+      "successful_requests": 20,
+      "task_quality": {
+        "count": 20,
+        "mean": 0.8,
+        "median": 1.0,
+        "stddev": 0.41039134083406165,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "metrics": {
+        "end_to_end_seconds": {
+          "count": 20,
+          "mean": 1.979822095000418,
+          "median": 1.842599599971436,
+          "stddev": 1.3859865848302009,
+          "min": 0.5996558000333607,
+          "max": 5.666941599920392
+        },
+        "ttft_seconds": {
+          "count": 20,
+          "mean": 0.7900462999998126,
+          "median": 1.0839485499309376,
+          "stddev": 0.6863969224981096,
+          "min": 0.055974500020965934,
+          "max": 1.9924134000902995
+        },
+        "generation_tokens_per_second": {
+          "count": 20,
+          "mean": 20.715194917105343,
+          "median": 21.868063565171944,
+          "stddev": 2.134008072284525,
+          "min": 17.041891240922354,
+          "max": 23.153346932065766
+        },
+        "peak_ram_mb": {
+          "count": 20,
+          "mean": 1343.598828125,
+          "median": 1351.72265625,
+          "stddev": 14.37186170177434,
+          "min": 1313.9453125,
+          "max": 1358.01953125
+        },
+        "energy_proxy_joules": {
+          "count": 20,
+          "mean": 47.97680465313112,
+          "median": 44.67232419405326,
+          "stddev": 33.734056683904726,
+          "min": 13.65716084575979,
+          "max": 136.22455769039405
+        }
+      }
+    },
+    "Q5_K_M": {
+      "successful_requests": 20,
+      "task_quality": {
+        "count": 20,
+        "mean": 0.9,
+        "median": 1.0,
+        "stddev": 0.30779350562554625,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "metrics": {
+        "end_to_end_seconds": {
+          "count": 20,
+          "mean": 2.1466859749983995,
+          "median": 2.08527934999438,
+          "stddev": 1.6585615930249662,
+          "min": 0.4311413000104949,
+          "max": 6.141063499962911
+        },
+        "ttft_seconds": {
+          "count": 20,
+          "mean": 1.0375666249950881,
+          "median": 1.3057131500099786,
+          "stddev": 0.94962690651741,
+          "min": 0.05756350001320243,
+          "max": 2.7854741999180987
+        },
+        "generation_tokens_per_second": {
+          "count": 20,
+          "mean": 17.30218476066477,
+          "median": 16.913940227610162,
+          "stddev": 2.012065237027671,
+          "min": 12.129923611806056,
+          "max": 20.31433040581261
+        },
+        "peak_ram_mb": {
+          "count": 20,
+          "mean": 1504.813671875,
+          "median": 1513.931640625,
+          "stddev": 13.893933858286484,
+          "min": 1475.83984375,
+          "max": 1518.37890625
+        },
+        "energy_proxy_joules": {
+          "count": 20,
+          "mean": 56.558525417017336,
+          "median": 50.662791310030855,
+          "stddev": 43.52932126923945,
+          "min": 9.477833090793212,
+          "max": 158.1983559547129
+        }
+      }
+    },
+    "Q6_K": {
+      "successful_requests": 20,
+      "task_quality": {
+        "count": 20,
+        "mean": 0.9,
+        "median": 1.0,
+        "stddev": 0.30779350562554625,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "metrics": {
+        "end_to_end_seconds": {
+          "count": 20,
+          "mean": 1.9843333249853459,
+          "median": 2.113775899983011,
+          "stddev": 1.0636268941196974,
+          "min": 0.39138659997843206,
+          "max": 4.3153000000165775
+        },
+        "ttft_seconds": {
+          "count": 20,
+          "mean": 0.9579346499871463,
+          "median": 1.245105699985288,
+          "stddev": 0.8561747759734187,
+          "min": 0.06138000008650124,
+          "max": 2.4729092000052333
+        },
+        "generation_tokens_per_second": {
+          "count": 20,
+          "mean": 16.184428316978426,
+          "median": 16.131472140759264,
+          "stddev": 2.347913723450149,
+          "min": 12.975787900654483,
+          "max": 19.26165626537228
+        },
+        "peak_ram_mb": {
+          "count": 20,
+          "mean": 1676.489453125,
+          "median": 1685.26171875,
+          "stddev": 13.439326364514656,
+          "min": 1647.96875,
+          "max": 1689.578125
+        },
+        "energy_proxy_joules": {
+          "count": 20,
+          "mean": 50.713443546568925,
+          "median": 51.39489269852028,
+          "stddev": 28.815512616652594,
+          "min": 8.117602700177668,
+          "max": 129.91660160466577
+        }
+      }
+    }
+  }
+}

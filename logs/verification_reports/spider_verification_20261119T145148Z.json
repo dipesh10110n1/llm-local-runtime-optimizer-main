@@ -1,0 +1,72 @@
+{
+  "dataset_root": "C:\\Users\\dipesh\\Desktop\\llm local runtime optimizer - Copy (2)\\local-llm-runtime-optimizer\\spider_data\\spider_data",
+  "verified_at": "2026-11-19T14:51:47.425999+00:00",
+  "expected_files": {
+    "train_spider.json": true,
+    "train_others.json": true,
+    "dev.json": true,
+    "dev_gold.sql": true,
+    "tables.json": true,
+    "test.json": true,
+    "test_gold.sql": true,
+    "train_gold.sql": true,
+    "test_tables.json": true,
+    "database": true,
+    "test_database": true
+  },
+  "json_files": {
+    "train_spider.json": {
+      "valid": true,
+      "record_count": 7000
+    },
+    "train_others.json": {
+      "valid": true,
+      "record_count": 1659
+    },
+    "dev.json": {
+      "valid": true,
+      "record_count": 1034
+    },
+    "test.json": {
+      "valid": true,
+      "record_count": 2147
+    }
+  },
+  "schema": {
+    "tables.json": {
+      "valid": true,
+      "database_count": 166
+    },
+    "test_tables.json": {
+      "valid": true,
+      "database_count": 206
+    }
+  },
+  "database_checks": {
+    "train_spider.json": {
+      "referenced_database_count": 140,
+      "opened_read_only": 140,
+      "missing_database_ids": [],
+      "open_failures": {}
+    },
+    "train_others.json": {
+      "referenced_database_count": 6,
+      "opened_read_only": 6,
+      "missing_database_ids": [],
+      "open_failures": {}
+    },
+    "dev.json": {
+      "referenced_database_count": 20,
+      "opened_read_only": 20,
+      "missing_database_ids": [],
+      "open_failures": {}
+    },
+    "test.json": {
+      "referenced_database_count": 40,
+      "opened_read_only": 40,
+      "missing_database_ids": [],
+      "open_failures": {}
+    }
+  },
+  "issues": []
+}

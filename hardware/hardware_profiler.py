@@ -7,6 +7,8 @@ import json
 import sys
 from pathlib import Path
 
+from core.provenance import llama_cpp_version
+
 
 def get_cpu_information():
     """Collect processor information."""
@@ -106,6 +108,7 @@ def get_backend_information():
         "llama_cpp_cli": shutil.which("llama-cli") is not None,
         "llama_cpp_server": shutil.which("llama-server") is not None,
         "ollama": shutil.which("ollama") is not None,
+        "llama_cpp_version": llama_cpp_version(),
     }
 
 

@@ -1,0 +1,115 @@
+{
+  "created_at": "2026-11-19T20:47:58.405372+00:00",
+  "minimum_samples": 3,
+  "profile_count": 2,
+  "profiles": [
+    {
+      "configuration_id": "qwen2.5-0.5b-q4_k_m:t4:c2048:cpu:cache-server-default:compress-none:retrieval-off:resident",
+      "model_id": "qwen2.5-0.5b-q4_k_m",
+      "quantization": "Q4_K_M",
+      "configuration": {
+        "configuration_id": "qwen2.5-0.5b-q4_k_m:t4:c2048:cpu:cache-server-default:compress-none:retrieval-off:resident",
+        "backend": "llama.cpp",
+        "threads": 4,
+        "context_size": 2048,
+        "gpu_layers": 0,
+        "cache": "server-default",
+        "prompt_compression": "none",
+        "retrieval": {
+          "enabled": false,
+          "top_k": 3,
+          "corpus_dir": "logs/retrieval_corpora/spider_schema_b54779f78302"
+        },
+        "resident_reuse": true
+      },
+      "task_type": "spider_text_to_sql",
+      "dataset": "spider_dev",
+      "sample_count": 9,
+      "quality": 0.8888888888888888,
+      "quality_statistics": {
+        "count": 9,
+        "mean": 0.8888888888888888,
+        "median": 1.0,
+        "stddev": 0.3333333333333333,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "quality_lower_confidence_bound": 0.6711111111111111,
+      "measurement_confidence": "repeatable",
+      "latency_seconds": 0.34262488888473147,
+      "latency_statistics": {
+        "count": 9,
+        "mean": 0.34262488888473147,
+        "median": 0.18080069997813553,
+        "stddev": 0.3206650371407626,
+        "min": 0.16685009992215782,
+        "max": 1.0732246999396011
+      },
+      "ttft_seconds": 0.1498684888679741,
+      "prompt_processing_seconds": 0.13186733333333334,
+      "prompt_tokens_per_second": 72.19338576520873,
+      "generation_tokens_per_second": 57.228474901097684,
+      "ram_mb": 406.6506076388889,
+      "peak_ram_mb": 406.6506076388889,
+      "energy_joules": null,
+      "energy_proxy_joules": 6.6120558108494745,
+      "quality_per_watt": 0.051963472118864054,
+      "measurement_kind": "measured_spider_execution_aggregate",
+      "energy_note": "energy_joules is measured only when a physical meter is configured; energy_proxy_joules is an estimate only"
+    },
+    {
+      "configuration_id": "qwen2.5-0.5b-q4_k_m:t4:c2048:cpu:cache-server-default:compress-none:retrieval-on:resident",
+      "model_id": "qwen2.5-0.5b-q4_k_m",
+      "quantization": "Q4_K_M",
+      "configuration": {
+        "configuration_id": "qwen2.5-0.5b-q4_k_m:t4:c2048:cpu:cache-server-default:compress-none:retrieval-on:resident",
+        "backend": "llama.cpp",
+        "threads": 4,
+        "context_size": 2048,
+        "gpu_layers": 0,
+        "cache": "server-default",
+        "prompt_compression": "none",
+        "retrieval": {
+          "enabled": true,
+          "top_k": 3,
+          "corpus_dir": "logs/retrieval_corpora/spider_schema_b54779f78302"
+        },
+        "resident_reuse": true
+      },
+      "task_type": "spider_text_to_sql",
+      "dataset": "spider_dev",
+      "sample_count": 9,
+      "quality": 0.6666666666666666,
+      "quality_statistics": {
+        "count": 9,
+        "mean": 0.6666666666666666,
+        "median": 1.0,
+        "stddev": 0.5,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "quality_lower_confidence_bound": 0.33999999999999997,
+      "measurement_confidence": "repeatable",
+      "latency_seconds": 0.6837431555355175,
+      "latency_statistics": {
+        "count": 9,
+        "mean": 0.6837431555355175,
+        "median": 0.2620416999561712,
+        "stddev": 0.5859919818665568,
+        "min": 0.19125669996719807,
+        "max": 1.580729900044389
+      },
+      "ttft_seconds": 0.18659791111066523,
+      "prompt_processing_seconds": 0.16541999999999998,
+      "prompt_tokens_per_second": 181.73446664959977,
+      "generation_tokens_per_second": 45.507362451421876,
+      "ram_mb": 443.90190972222223,
+      "peak_ram_mb": 443.90190972222223,
+      "energy_joules": null,
+      "energy_proxy_joules": 15.22815458536451,
+      "quality_per_watt": 0.034839855545048905,
+      "measurement_kind": "measured_spider_execution_aggregate",
+      "energy_note": "energy_joules is measured only when a physical meter is configured; energy_proxy_joules is an estimate only"
+    }
+  ]
+}

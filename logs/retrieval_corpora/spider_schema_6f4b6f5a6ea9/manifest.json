@@ -1,0 +1,12 @@
+{
+  "dataset": "spider_dev",
+  "database_ids": [
+    "car_1",
+    "concert_singer",
+    "employee_hire_evaluation",
+    "flight_2",
+    "pets_1"
+  ],
+  "document_count": 5,
+  "contains_gold_sql": false
+}

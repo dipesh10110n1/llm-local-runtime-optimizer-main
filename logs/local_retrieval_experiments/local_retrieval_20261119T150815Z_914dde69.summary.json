@@ -1,0 +1,126 @@
+{
+  "experiment_id": "local_retrieval_20261119T150815Z_914dde69",
+  "dataset": "spider_dev",
+  "sample_limit": 1,
+  "trials": 1,
+  "models": [
+    "qwen2.5-1.5b-q4_k_m"
+  ],
+  "corpus_dir": "logs/retrieval_corpora/spider_schema_20926a3d94a2",
+  "corpus_provenance": "Generated locally from Spider schema metadata only; it contains no gold SQL.",
+  "retrieval_method": "local lexical-overlap top-1 retrieval",
+  "token_count_note": "Exact local token counts are null if /tokenize is unavailable.",
+  "summary": {
+    "qwen2.5-1.5b-q4_k_m:retrieval_off": {
+      "successful_requests": 1,
+      "task_quality": {
+        "count": 1,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "metrics": {
+        "end_to_end_seconds": {
+          "count": 1,
+          "mean": 0.9877129000378773,
+          "median": 0.9877129000378773,
+          "min": 0.9877129000378773,
+          "max": 0.9877129000378773
+        },
+        "ttft_seconds": {
+          "count": 1,
+          "mean": 0.3177474000258371,
+          "median": 0.3177474000258371,
+          "min": 0.3177474000258371,
+          "max": 0.3177474000258371
+        },
+        "generation_tokens_per_second": {
+          "count": 1,
+          "mean": 17.918872305636235,
+          "median": 17.918872305636235,
+          "min": 17.918872305636235,
+          "max": 17.918872305636235
+        },
+        "peak_ram_mb": {
+          "count": 1,
+          "mean": 1315.1640625,
+          "median": 1315.1640625,
+          "min": 1315.1640625,
+          "max": 1315.1640625
+        },
+        "energy_proxy_joules": {
+          "count": 1,
+          "mean": 25.673676283623433,
+          "median": 25.673676283623433,
+          "min": 25.673676283623433,
+          "max": 25.673676283623433
+        }
+      },
+      "exact_input_tokens": {
+        "count": 1,
+        "mean": 25,
+        "median": 25,
+        "min": 25,
+        "max": 25
+      },
+      "retrieval_hit_rate": 0.0
+    },
+    "qwen2.5-1.5b-q4_k_m:retrieval_on": {
+      "successful_requests": 1,
+      "task_quality": {
+        "count": 1,
+        "mean": 1.0,
+        "median": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "metrics": {
+        "end_to_end_seconds": {
+          "count": 1,
+          "mean": 0.9292161000194028,
+          "median": 0.9292161000194028,
+          "min": 0.9292161000194028,
+          "max": 0.9292161000194028
+        },
+        "ttft_seconds": {
+          "count": 1,
+          "mean": 0.3492500999709591,
+          "median": 0.3492500999709591,
+          "min": 0.3492500999709591,
+          "max": 0.3492500999709591
+        },
+        "generation_tokens_per_second": {
+          "count": 1,
+          "mean": 18.973990109376427,
+          "median": 18.973990109376427,
+          "min": 18.973990109376427,
+          "max": 18.973990109376427
+        },
+        "peak_ram_mb": {
+          "count": 1,
+          "mean": 1316.71484375,
+          "median": 1316.71484375,
+          "min": 1316.71484375,
+          "max": 1316.71484375
+        },
+        "energy_proxy_joules": {
+          "count": 1,
+          "mean": 24.870468917019316,
+          "median": 24.870468917019316,
+          "min": 24.870468917019316,
+          "max": 24.870468917019316
+        }
+      },
+      "exact_input_tokens": {
+        "count": 1,
+        "mean": 167,
+        "median": 167,
+        "min": 167,
+        "max": 167
+      },
+      "retrieval_hit_rate": 1.0,
+      "quality_delta_vs_off": 1.0
+    }
+  }
+}

@@ -6,3 +6,6 @@ __pycache__/
 test-results/
 data/*.db
 runtime/active_runtime.json
+__MACOSX/
+.DS_Store
+._*

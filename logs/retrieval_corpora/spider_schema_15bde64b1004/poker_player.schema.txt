@@ -1,0 +1,6 @@
+Spider database schema reference.
+DATABASE_ID: poker_player
+Use this source only to identify tables and columns; do not invent schema.
+
+people(People_ID, Nationality, Name, Birth_Date, Height)
+poker_player(Poker_Player_ID, People_ID, Final_Table_Made, Best_Finish, Money_Rank, Earnings)

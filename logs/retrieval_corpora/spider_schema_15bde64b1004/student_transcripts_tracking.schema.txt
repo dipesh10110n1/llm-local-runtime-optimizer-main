@@ -1,0 +1,15 @@
+Spider database schema reference.
+DATABASE_ID: student_transcripts_tracking
+Use this source only to identify tables and columns; do not invent schema.
+
+Addresses(address_id, line_1, line_2, line_3, city, zip_postcode, state_province_county, country, other_address_details)
+Courses(course_id, course_name, course_description, other_details)
+Degree_Programs(degree_program_id, department_id, degree_summary_name, degree_summary_description, other_details)
+Departments(department_id, department_name, department_description, other_details)
+Sections(section_id, course_id, section_name, section_description, other_details)
+Semesters(semester_id, semester_name, semester_description, other_details)
+Student_Enrolment(student_enrolment_id, degree_program_id, semester_id, student_id, other_details)
+Student_Enrolment_Courses(student_course_id, course_id, student_enrolment_id)
+Students(student_id, current_address_id, permanent_address_id, first_name, middle_name, last_name, cell_mobile_number, email_address, ssn, date_first_registered, date_left, other_student_details)
+Transcript_Contents(student_course_id, transcript_id)
+Transcripts(transcript_id, transcript_date, other_details)

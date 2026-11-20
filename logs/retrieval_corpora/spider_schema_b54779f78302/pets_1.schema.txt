@@ -1,0 +1,7 @@
+Spider database schema reference.
+DATABASE_ID: pets_1
+Use this source only to identify tables and columns; do not invent schema.
+
+Has_Pet(StuID, PetID)
+Pets(PetID, PetType, pet_age, weight)
+Student(StuID, LName, Fname, Age, Sex, Major, Advisor, city_code)

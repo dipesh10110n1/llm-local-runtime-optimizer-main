@@ -1,0 +1,8 @@
+{
+  "dataset": "spider_dev",
+  "database_ids": [
+    "concert_singer"
+  ],
+  "document_count": 1,
+  "contains_gold_sql": false
+}

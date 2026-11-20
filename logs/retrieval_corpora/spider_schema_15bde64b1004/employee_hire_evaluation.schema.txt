@@ -1,0 +1,8 @@
+Spider database schema reference.
+DATABASE_ID: employee_hire_evaluation
+Use this source only to identify tables and columns; do not invent schema.
+
+employee(Employee_ID, Name, Age, City)
+evaluation(Employee_ID, Year_awarded, Bonus)
+hiring(Shop_ID, Employee_ID, Start_from, Is_full_time)
+shop(Shop_ID, Name, Location, District, Number_products, Manager_name)

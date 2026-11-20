@@ -1,0 +1,140 @@
+{
+  "experiment_id": "prompt_compression_20261119T150532Z_e0e4ea87",
+  "dataset": "spider_dev",
+  "sample_limit": 1,
+  "trials": 1,
+  "models": [
+    "qwen2.5-1.5b-q4_k_m"
+  ],
+  "retrieval": "disabled",
+  "compression_modes": [
+    "none",
+    "whitespace"
+  ],
+  "token_count_note": "Exact local token counts are null when the active llama.cpp build does not expose /tokenize.",
+  "summary": {
+    "qwen2.5-1.5b-q4_k_m:none": {
+      "successful_requests": 1,
+      "task_quality": {
+        "count": 1,
+        "mean": 1.0,
+        "median": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "metrics": {
+        "end_to_end_seconds": {
+          "count": 1,
+          "mean": 1.3225592999951914,
+          "median": 1.3225592999951914,
+          "min": 1.3225592999951914,
+          "max": 1.3225592999951914
+        },
+        "ttft_seconds": {
+          "count": 1,
+          "mean": 0.5808946000179276,
+          "median": 0.5808946000179276,
+          "min": 0.5808946000179276,
+          "max": 0.5808946000179276
+        },
+        "generation_tokens_per_second": {
+          "count": 1,
+          "mean": 20.230629172567266,
+          "median": 20.230629172567266,
+          "min": 20.230629172567266,
+          "max": 20.230629172567266
+        },
+        "peak_ram_mb": {
+          "count": 1,
+          "mean": 1313.6171875,
+          "median": 1313.6171875,
+          "min": 1313.6171875,
+          "max": 1313.6171875
+        },
+        "energy_proxy_joules": {
+          "count": 1,
+          "mean": 35.63900545697042,
+          "median": 35.63900545697042,
+          "min": 35.63900545697042,
+          "max": 35.63900545697042
+        }
+      },
+      "input_characters": {
+        "count": 1,
+        "mean": 354,
+        "median": 354,
+        "min": 354,
+        "max": 354
+      },
+      "exact_input_tokens": {
+        "count": 1,
+        "mean": 89,
+        "median": 89,
+        "min": 89,
+        "max": 89
+      }
+    },
+    "qwen2.5-1.5b-q4_k_m:whitespace": {
+      "successful_requests": 1,
+      "task_quality": {
+        "count": 1,
+        "mean": 1.0,
+        "median": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "metrics": {
+        "end_to_end_seconds": {
+          "count": 1,
+          "mean": 1.1539029000559822,
+          "median": 1.1539029000559822,
+          "min": 1.1539029000559822,
+          "max": 1.1539029000559822
+        },
+        "ttft_seconds": {
+          "count": 1,
+          "mean": 0.671334799961187,
+          "median": 0.671334799961187,
+          "min": 0.671334799961187,
+          "max": 0.671334799961187
+        },
+        "generation_tokens_per_second": {
+          "count": 1,
+          "mean": 22.8176475835074,
+          "median": 22.8176475835074,
+          "min": 22.8176475835074,
+          "max": 22.8176475835074
+        },
+        "peak_ram_mb": {
+          "count": 1,
+          "mean": 1313.29296875,
+          "median": 1313.29296875,
+          "min": 1313.29296875,
+          "max": 1313.29296875
+        },
+        "energy_proxy_joules": {
+          "count": 1,
+          "mean": 30.41976520272583,
+          "median": 30.41976520272583,
+          "min": 30.41976520272583,
+          "max": 30.41976520272583
+        }
+      },
+      "input_characters": {
+        "count": 1,
+        "mean": 352,
+        "median": 352,
+        "min": 352,
+        "max": 352
+      },
+      "exact_input_tokens": {
+        "count": 1,
+        "mean": 89,
+        "median": 89,
+        "min": 89,
+        "max": 89
+      },
+      "quality_delta_vs_none": 0.0
+    }
+  }
+}

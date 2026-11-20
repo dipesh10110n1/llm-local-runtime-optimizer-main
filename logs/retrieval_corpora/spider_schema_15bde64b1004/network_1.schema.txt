@@ -1,0 +1,7 @@
+Spider database schema reference.
+DATABASE_ID: network_1
+Use this source only to identify tables and columns; do not invent schema.
+
+Friend(student_id, friend_id)
+Highschooler(ID, name, grade)
+Likes(student_id, liked_id)

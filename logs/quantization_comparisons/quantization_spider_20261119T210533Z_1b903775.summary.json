@@ -1,0 +1,212 @@
+{
+  "experiment_id": "quantization_spider_20261119T210533Z_1b903775",
+  "dataset": "spider_dev",
+  "sample_limit": 5,
+  "trials": 3,
+  "sample_selection": "first development example from each database, then remaining examples in source order",
+  "database_ids": [
+    "concert_singer",
+    "pets_1",
+    "car_1",
+    "flight_2",
+    "employee_hire_evaluation"
+  ],
+  "preflight": {
+    "model_family": "Qwen2.5-1.5B-Instruct",
+    "architecture_requirement": "same base model and compatible GGUF tokenizer",
+    "disk_free_gib": 104.84,
+    "quantization_tool_available": true,
+    "variants": [
+      {
+        "quantization": "Q4_K_M",
+        "path": "models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+        "exists": true,
+        "file_size_bytes": 1117320736,
+        "file_size_gib": 1.041,
+        "gguf_header_valid": true,
+        "status": "ready"
+      },
+      {
+        "quantization": "Q5_K_M",
+        "path": "models/quantizations/qwen2.5-1.5b-instruct-q5_k_m.gguf",
+        "exists": true,
+        "file_size_bytes": 1285494304,
+        "file_size_gib": 1.197,
+        "gguf_header_valid": true,
+        "status": "ready"
+      },
+      {
+        "quantization": "Q6_K",
+        "path": "models/quantizations/qwen2.5-1.5b-instruct-q6_k.gguf",
+        "exists": true,
+        "file_size_bytes": 1464178720,
+        "file_size_gib": 1.364,
+        "gguf_header_valid": true,
+        "status": "ready"
+      }
+    ],
+    "download_or_conversion_authorization_required": true,
+    "source_status": "Official acquisition metadata is recorded in docs/MODEL_SOURCES.md; this preflight itself performs no network access."
+  },
+  "summary": {
+    "Q4_K_M": {
+      "successful_requests": 15,
+      "task_quality": {
+        "count": 15,
+        "mean": 1.0,
+        "median": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "metrics": {
+        "end_to_end_seconds": {
+          "count": 15,
+          "mean": 1.0253928133441756,
+          "median": 0.7154009999940172,
+          "stddev": 0.6081140754583996,
+          "min": 0.4763774999883026,
+          "max": 2.071648200042546
+        },
+        "ttft_seconds": {
+          "count": 15,
+          "mean": 0.41884948667138816,
+          "median": 0.06562360003590584,
+          "stddev": 0.6174688018255337,
+          "min": 0.04823820001911372,
+          "max": 1.4375817999243736
+        },
+        "generation_tokens_per_second": {
+          "count": 15,
+          "mean": 22.485041265078085,
+          "median": 22.419629938139067,
+          "stddev": 0.7503190899885394,
+          "min": 21.2438086553813,
+          "max": 23.850182692399425
+        },
+        "peak_ram_mb": {
+          "count": 15,
+          "mean": 1327.94375,
+          "median": 1330.64453125,
+          "stddev": 5.425811943886235,
+          "min": 1313.8203125,
+          "max": 1330.8828125
+        },
+        "energy_proxy_joules": {
+          "count": 15,
+          "mean": 23.079238696455683,
+          "median": 15.929897126320643,
+          "stddev": 14.935680274146431,
+          "min": 10.769823194908675,
+          "max": 49.17296693388968
+        }
+      }
+    },
+    "Q5_K_M": {
+      "successful_requests": 15,
+      "task_quality": {
+        "count": 15,
+        "mean": 1.0,
+        "median": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "metrics": {
+        "end_to_end_seconds": {
+          "count": 15,
+          "mean": 1.1126405933406205,
+          "median": 0.7295409999787807,
+          "stddev": 0.9541383834419465,
+          "min": 0.3376359000103548,
+          "max": 2.974118100013584
+        },
+        "ttft_seconds": {
+          "count": 15,
+          "mean": 0.5632237800008928,
+          "median": 0.07448670000303537,
+          "stddev": 0.8459659122978763,
+          "min": 0.05558179994113743,
+          "max": 1.9955073000164703
+        },
+        "generation_tokens_per_second": {
+          "count": 15,
+          "mean": 18.98526342153096,
+          "median": 19.87636898491384,
+          "stddev": 1.9375748429672168,
+          "min": 16.044096307362103,
+          "max": 21.36394549345373
+        },
+        "peak_ram_mb": {
+          "count": 15,
+          "mean": 1490.0934895833334,
+          "median": 1492.66796875,
+          "stddev": 5.2914913896525535,
+          "min": 1476.359375,
+          "max": 1493.015625
+        },
+        "energy_proxy_joules": {
+          "count": 15,
+          "mean": 27.458632998277793,
+          "median": 14.99487347648694,
+          "stddev": 26.520942412894062,
+          "min": 6.516372870199848,
+          "max": 80.54549125858217
+        }
+      }
+    },
+    "Q6_K": {
+      "successful_requests": 15,
+      "task_quality": {
+        "count": 15,
+        "mean": 1.0,
+        "median": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "metrics": {
+        "end_to_end_seconds": {
+          "count": 15,
+          "mean": 1.2270617200139289,
+          "median": 0.7582426000153646,
+          "stddev": 0.9199974357812033,
+          "min": 0.37708390003535897,
+          "max": 2.839907499961555
+        },
+        "ttft_seconds": {
+          "count": 15,
+          "mean": 0.5352941666574528,
+          "median": 0.062520100036636,
+          "stddev": 0.8000717840903292,
+          "min": 0.05449459992814809,
+          "max": 1.9041889000218362
+        },
+        "generation_tokens_per_second": {
+          "count": 15,
+          "mean": 17.955997712547827,
+          "median": 18.955466319052576,
+          "stddev": 2.655707811442053,
+          "min": 12.827927252824551,
+          "max": 20.145855997421332
+        },
+        "peak_ram_mb": {
+          "count": 15,
+          "mean": 1661.7815104166666,
+          "median": 1664.4765625,
+          "stddev": 5.389152770837509,
+          "min": 1647.75390625,
+          "max": 1664.69921875
+        },
+        "energy_proxy_joules": {
+          "count": 15,
+          "mean": 33.003195117981875,
+          "median": 17.587437107356383,
+          "stddev": 30.893567406423568,
+          "min": 7.773113244353881,
+          "max": 111.01858860954358
+        }
+      }
+    }
+  }
+}

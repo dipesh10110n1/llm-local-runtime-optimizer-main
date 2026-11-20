@@ -2,6 +2,7 @@ from __future__ import annotations
 
 """Convert already-downloaded official JSON/JSONL samples; intentionally does not auto-download datasets."""
 import argparse
+import hashlib
 import json
 from datetime import UTC, datetime
 from pathlib import Path
@@ -28,7 +29,11 @@ def prepare(dataset: str, source: Path, limit: int = 50) -> Path:
         for sample in samples:
             handle.write(json.dumps(sample, ensure_ascii=False) + "\n")
     provenance = output.with_suffix(".manifest.json")
-    provenance.write_text(json.dumps({"dataset": dataset, "source_file": str(source), "prepared_at": datetime.now(UTC).isoformat(), "sample_count": len(samples)}, indent=2), encoding="utf-8")
+    provenance.write_text(json.dumps({
+        "dataset": dataset, "source_file": str(source), "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+        "source_bytes": source.stat().st_size, "prepared_at": datetime.now(UTC).isoformat(),
+        "sample_count": len(samples), "normalization": "orbit_local_dataset_v2",
+    }, indent=2), encoding="utf-8")
     return output
 
 
