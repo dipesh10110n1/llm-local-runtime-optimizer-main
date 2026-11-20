@@ -136,9 +136,10 @@ Configure `ORBIT_ENERGY_METER_READING_PATH` in local `.env` only when a real
 meter export updates a JSON file such as:
 
 ```json
-{"source":"wall power meter","cumulative_joules":12345.6}
+{"source":"wall power meter","measurement_kind":"physical_meter","cumulative_joules":12345.6}
 ```
 
 Orbit reads two cumulative values around inference and records actual joules
-only when they are valid and monotonic. CPU utilisation remains an estimated
-proxy, never an actual energy reading.
+only when they are valid, monotonic, and not labelled as simulated, estimated,
+or proxy data. CPU utilisation remains an estimated proxy, never an actual
+energy reading or an automatic ranking metric.

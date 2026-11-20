@@ -11,7 +11,7 @@ import streamlit as st
 from core.model_registry import load_models
 from core.settings import settings
 from optimizer.live_comparator import compare_on_spot
-from optimizer.evidence_report import dataset_readiness, energy_readiness, profile_pareto_view, selection_history
+from optimizer.evidence_report import dataset_readiness, energy_readiness, profile_comparison_view, profile_pareto_view, selection_history
 from optimizer.request_router import record_selection, selection_caption
 from runtime.clients import InferenceError, backend_health
 from runtime.supervisor import RuntimeSwitchError, ensure_runtime
@@ -50,6 +50,7 @@ if "last_telemetry" not in st.session_state:
     st.session_state.last_telemetry = None
 
 models = local_models()
+installed_model_ids = sorted(model["model_id"] for model in models)
 runtime_model = models[0] if models else None
 ready = model_is_ready()
 
@@ -83,7 +84,18 @@ with st.sidebar:
         )
         full_configuration_matrix = st.toggle("Compare safe runtime configurations", key="full_configuration_matrix")
         max_live_candidates = (
-            int(st.number_input("Maximum live configurations", min_value=1, max_value=720, value=3, step=1, key="max_live_candidates"))
+            int(st.number_input(
+                "Maximum live configurations",
+                min_value=1,
+                max_value=720,
+                value=max(1, min(len(installed_model_ids), 720)),
+                step=1,
+                key="max_live_candidates_model_balanced",
+                help=(
+                    "A limited matrix run schedules one configuration per installed model before it schedules "
+                    "additional variants. Use at least the installed-model count to cover every model."
+                ),
+            ))
             if full_configuration_matrix else None
         )
         safety_reserve_mb = float(
@@ -101,9 +113,10 @@ with st.sidebar:
         os.environ["ORBIT_SAFETY_RESERVE_MB"] = str(int(safety_reserve_mb))
         st.caption(f"Quality is an admission constraint, never an estimate. Full comparison runs sequentially and preserves the {safety_reserve_mb:.0f} MiB RAM reserve.")
     st.caption(
-        "Each message compares safe local candidates sequentially."
+        f"Matrix exploration covers distinct models first; the current cap is {max_live_candidates} configuration(s) across {len(installed_model_ids)} installed model(s)."
         if full_configuration_matrix else f"Each message compares all {len(models)} installed local models sequentially."
     )
+    st.caption("Installed models: " + (", ".join(installed_model_ids) if installed_model_ids else "none"))
     st.space("medium")
     st.caption("Private by design. Requests stay on this machine.")
 
@@ -218,12 +231,18 @@ if st.session_state.last_telemetry:
         failures = decision.get("comparison_failures", [])
         if comparison:
             st.subheader("On-the-spot model comparison")
-            st.caption("Each response was generated sequentially from the same prompt. The answer above is the exact response selected by the weighted measurement score.")
+            st.caption("Each response was generated sequentially from the same prompt. The answer above is the exact response selected by the weighted measurement score. Live task quality remains blank unless this prompt has a validated reference answer.")
             rows = []
             selected_id = decision.get("selected", {}).get("model", {}).get("model_id")
+            benchmark_profiles = {
+                row["configuration_id"]: row
+                for row in profile_comparison_view()
+                if row.get("configuration_id") and row.get("quality") is not None
+            }
             for index, entry in enumerate(comparison, start=1):
                 configuration = entry["configuration"]
                 model_id = entry["candidate"]["model"]["model_id"]
+                benchmark = benchmark_profiles.get(configuration["configuration_id"])
                 rows.append({
                     "Candidate": index,
                     "Model": model_id,
@@ -241,7 +260,11 @@ if st.session_state.last_telemetry:
                     "Peak RAM (MiB)": round(entry["peak_ram_mb"], 1) if entry.get("peak_ram_mb") is not None else None,
                     "Energy proxy (J)": round(entry["energy_proxy_joules"], 2) if entry.get("energy_proxy_joules") is not None else None,
                     "Estimated power (W)": round(entry["energy_proxy_watts"], 2) if entry.get("energy_proxy_watts") is not None else None,
-                    "Task quality": entry.get("task_quality"),
+                    "Live task quality": entry.get("task_quality"),
+                    "Benchmark quality (Spider)": benchmark.get("quality") if benchmark else None,
+                    "Benchmark quality LCB": benchmark.get("quality_lower_confidence_bound") if benchmark else None,
+                    "Benchmark trials": benchmark.get("trial_count") if benchmark else None,
+                    "Benchmark evidence": "Exact configuration" if benchmark else "No exact configuration benchmark",
                     "Quality / proxy J": round(entry["quality_per_proxy_joule"], 4) if entry.get("quality_per_proxy_joule") is not None else None,
                     "Quality / estimated W": round(entry["quality_per_estimated_watt"], 4) if entry.get("quality_per_estimated_watt") is not None else None,
                     "Energy status": entry.get("energy_measurement_kind") or "proxy only",
@@ -266,7 +289,11 @@ if st.session_state.last_telemetry:
                     "Peak RAM (MiB)": None,
                     "Energy proxy (J)": None,
                     "Estimated power (W)": None,
-                    "Task quality": None,
+                    "Live task quality": None,
+                    "Benchmark quality (Spider)": None,
+                    "Benchmark quality LCB": None,
+                    "Benchmark trials": None,
+                    "Benchmark evidence": "No generated response",
                     "Quality / proxy J": None,
                     "Quality / estimated W": None,
                     "Energy status": "unavailable",
@@ -278,6 +305,19 @@ if st.session_state.last_telemetry:
                 st.caption(f"Quality threshold: {decision['quality_threshold']:.2f}. Candidates without measured task-valid quality are rejected.")
             if decision.get("deferred_candidate_count"):
                 st.caption(f"{decision['deferred_candidate_count']} safe configurations were deferred by the live-run limit and were not compared in this response.")
+            candidate_models = decision.get("candidate_model_ids", [])
+            scheduled_models = decision.get("scheduled_model_ids", [])
+            if candidate_models:
+                coverage_rows = [
+                    {
+                        "Model": model_id,
+                        "Status": "Compared" if model_id in scheduled_models else "Not scheduled",
+                        "Reason": "Live response generated or reported as unavailable" if model_id in scheduled_models else "Configuration cap reached before this model was scheduled",
+                    }
+                    for model_id in candidate_models
+                ]
+                st.subheader("Candidate coverage")
+                st.dataframe(pd.DataFrame(coverage_rows), hide_index=True, alt="Installed-model coverage for this live comparison")
             st.subheader("Weighted selection")
             st.json(decision.get("scoring", {}))
             st.subheader("Complete candidate responses")
@@ -306,9 +346,36 @@ if st.session_state.last_telemetry:
 
             pareto_rows = profile_pareto_view()
             if pareto_rows:
-                st.subheader("Measured Pareto frontier")
-                st.caption("Non-dominated Spider profiles: higher quality, lower latency, and lower RAM. Proxy energy remains an estimate.")
+                evidence_models = {row.get("model_id") for row in pareto_rows}
+                missing_evidence = [model_id for model_id in installed_model_ids if model_id not in evidence_models]
+                st.subheader("Historical measured Pareto frontier")
+                st.caption("This is stored Spider benchmark evidence, not the current live comparison. Higher quality, lower latency, and lower RAM are preferred; proxy energy remains an estimate and is excluded from automated selection.")
+                if missing_evidence:
+                    st.warning(
+                        "Historical evidence does not yet cover every installed model: " + ", ".join(missing_evidence) + ". "
+                        "These models are not silently treated as measured equivalents.",
+                        icon=":material/info:",
+                    )
                 st.dataframe(pd.DataFrame(pareto_rows), hide_index=True, alt="Measured non-dominated Spider benchmark profiles")
+
+            comparison_rows = profile_comparison_view()
+            if comparison_rows:
+                comparison_frame = pd.DataFrame(comparison_rows).rename(columns={
+                    "quality": "Quality", "latency_seconds": "Latency (s)", "ram_mb": "Peak RAM (MiB)",
+                    "model_id": "Model", "sample_count": "Samples", "trial_count": "Trials",
+                })
+                st.subheader("Measured trade-offs")
+                st.caption("Each point is a recorded Spider configuration. Profiles with fewer than three recorded trials are shown for transparency but are not eligible for confidence-aware quality selection.")
+                chart_columns = st.columns(2)
+                with chart_columns[0]:
+                    st.scatter_chart(comparison_frame, x="Latency (s)", y="Quality", color="Model", alt="Measured Spider quality versus end-to-end latency by configuration")
+                with chart_columns[1]:
+                    st.scatter_chart(comparison_frame, x="Peak RAM (MiB)", y="Quality", color="Model", alt="Measured Spider quality versus peak RAM by configuration")
+                st.dataframe(
+                    comparison_frame[["Model", "Quality", "Latency (s)", "Peak RAM (MiB)", "Samples", "Trials", "reproducibility_status", "energy_joules", "energy_proxy_joules"]],
+                    hide_index=True,
+                    alt="Measured configuration coverage, confidence, actual energy, and proxy energy",
+                )
 
             history_rows = selection_history()
             if history_rows:

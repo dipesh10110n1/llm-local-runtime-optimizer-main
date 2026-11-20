@@ -11,7 +11,6 @@ from typing import Any
 
 from core.ids import new_experiment_id
 from core.settings import ROOT
-from optimizer.weighted_selection import score_candidates
 
 RAW_DIRECTORY = ROOT / "logs" / "full_matrix_benchmarks"
 STANDARD_RAW_DIRECTORY = ROOT / "logs" / "standard_quality_benchmarks"
@@ -27,17 +26,6 @@ CONTROLLED_STUDY_DIRECTORIES = {
     "prompt_compression": ROOT / "logs" / "prompt_compression_experiments",
     "local_retrieval": ROOT / "logs" / "local_retrieval_experiments",
     "three_model": ROOT / "logs" / "three_model_comparisons",
-}
-
-# Quality is an admission gate. These weights compare the remaining measured
-# efficiency/cost properties and never reinterpret a proxy as real energy.
-LOWEST_COST_WEIGHTS = {
-    "task_quality": 0.0,
-    "generation_tokens_per_second": 0.25,
-    "ttft_seconds": 0.25,
-    "peak_ram_mb": 0.25,
-    "energy_proxy_joules": 0.10,
-    "quality_per_estimated_watt": 0.15,
 }
 
 
@@ -59,20 +47,40 @@ def _quality_lower_bound(values: list[float]) -> float | None:
     return max(0.0, min(1.0, mean - 1.96 * deviation / math.sqrt(len(values))))
 
 
+def _coverage(group: list[dict[str, Any]]) -> dict[str, Any]:
+    """Record enough study coverage to distinguish a repeat from one-off data."""
+    trial_values = {
+        item.get("trial_number", item.get("trial"))
+        for item in group
+        if item.get("trial_number", item.get("trial")) is not None
+    }
+    prompt_values = {item.get("prompt_id") for item in group if item.get("prompt_id")}
+    trial_count = len(trial_values)
+    return {
+        "trial_count": trial_count,
+        "unique_prompt_count": len(prompt_values),
+        "reproducibility_status": "complete" if trial_count >= 3 and prompt_values else "limited",
+    }
+
+
 def aggregate_records(records: list[dict[str, Any]], minimum_samples: int = 3) -> list[dict[str, Any]]:
     """Aggregate only successful measured Spider trials by exact configuration."""
-    groups: dict[str, list[dict[str, Any]]] = {}
+    groups: dict[tuple[str, str], list[dict[str, Any]]] = {}
     for record in records:
         if record.get("phase") == "measured" and record.get("success"):
-            groups.setdefault(record["configuration"]["configuration_id"], []).append(record)
+            # Never pool separate campaigns: ambient load, runtime versions,
+            # and model artifacts can change between experiment IDs.
+            identity = (record["configuration"]["configuration_id"], record.get("experiment_id", "legacy-unscoped"))
+            groups.setdefault(identity, []).append(record)
     profiles: list[dict[str, Any]] = []
-    for configuration_id, group in sorted(groups.items()):
+    for (configuration_id, experiment_id), group in sorted(groups.items()):
         if len(group) < minimum_samples:
             continue
         telemetry = [item["telemetry"] for item in group]
         quality = [item["task_quality"]["score"] for item in group if item.get("task_quality", {}).get("score") is not None]
         profile = {
             "configuration_id": configuration_id, "model_id": group[0]["model_id"],
+            "evidence_experiment_id": experiment_id,
             "quantization": group[0].get("quantization"), "configuration": group[0]["configuration"],
             "task_type": "spider_text_to_sql", "dataset": "spider_dev",
             "sample_count": len(group), "quality": statistics.mean(quality) if quality else None,
@@ -93,6 +101,7 @@ def aggregate_records(records: list[dict[str, Any]], minimum_samples: int = 3) -
             "quality_per_proxy_joule": _stats([item.get("quality_per_proxy_joule") for item in group if item.get("quality_per_proxy_joule") is not None])["mean"],
             "measurement_kind": "measured_spider_execution_aggregate",
             "energy_note": "energy_joules is measured only when a physical meter is configured; energy_proxy_joules is an estimate only",
+            **_coverage(group),
         }
         profiles.append(profile)
     return profiles
@@ -117,6 +126,10 @@ def _normalise_controlled_record(record: dict[str, Any], source: str) -> dict[st
     if source == "cache":
         cache_mode = str(record.get("cache_mode", "unknown"))
         configuration["cache_mode"] = cache_mode
+        configuration["cache"] = {
+            "enabled": "prompt-cache-enabled",
+            "disabled": "prompt-cache-disabled",
+        }.get(cache_mode, "server-default")
         configuration["configuration_id"] = f"{configuration_id}:cache-{cache_mode}"
     telemetry = dict(record.get("telemetry") or {})
     if not telemetry:
@@ -179,23 +192,24 @@ def load_standard_quality_records() -> list[dict[str, Any]]:
 
 def aggregate_standard_quality_records(records: list[dict[str, Any]], minimum_samples: int = 3) -> list[dict[str, Any]]:
     """Turn repeated task-specific local trials into optimizer profiles."""
-    groups: dict[tuple[str, str, str], list[dict[str, Any]]] = {}
+    groups: dict[tuple[str, str, str, str], list[dict[str, Any]]] = {}
     for record in records:
         if record.get("phase") != "measured" or not record.get("success"):
             continue
         quality = record.get("quality", {}).get("score")
         if quality is None:
             continue
-        key = (record["configuration"]["configuration_id"], record["dataset"], record["task_type"])
+        key = (record["configuration"]["configuration_id"], record["dataset"], record["task_type"], record.get("experiment_id", "legacy-unscoped"))
         groups.setdefault(key, []).append(record)
     profiles: list[dict[str, Any]] = []
-    for (configuration_id, dataset, task_type), group in sorted(groups.items()):
+    for (configuration_id, dataset, task_type, experiment_id), group in sorted(groups.items()):
         if len(group) < minimum_samples:
             continue
         telemetry = [record["telemetry"] for record in group]
         quality = [record["quality"]["score"] for record in group]
         profiles.append({
             "configuration_id": configuration_id, "model_id": group[0]["model_id"],
+            "evidence_experiment_id": experiment_id,
             "configuration": group[0]["configuration"], "task_type": task_type, "dataset": dataset,
             "sample_count": len(group), "quality": statistics.mean(quality),
             "quality_statistics": _stats(quality), "quality_lower_confidence_bound": _quality_lower_bound(quality),
@@ -208,6 +222,7 @@ def aggregate_standard_quality_records(records: list[dict[str, Any]], minimum_sa
             "energy_joules": _stats([item.get("energy_joules") for item in telemetry if item.get("energy_measurement_kind") == "measured" and item.get("energy_joules") is not None])["mean"],
             "energy_proxy_joules": _stats([item.get("energy_proxy_joules") for item in telemetry if item.get("energy_proxy_joules") is not None])["mean"],
             "measurement_kind": "measured_task_specific_aggregate",
+            **_coverage(group),
         })
     return profiles
 
@@ -235,13 +250,30 @@ def latest_profiles() -> list[dict[str, Any]]:
     return list(profiles_by_identity.values())
 
 
-def select_lowest_cost(profiles: list[dict[str, Any]], quality_threshold: float, weights: dict[str, float] | None = None) -> dict[str, Any]:
-    """Apply the quality gate, then choose the best normalized cost profile."""
+def _cost_key(profile: dict[str, Any], preference: str) -> tuple[float, ...]:
+    """A disclosed deterministic objective with no invented metric weights."""
+    infinity = float("inf")
+    latency = float(profile.get("latency_seconds") or infinity)
+    ram = float(profile.get("peak_ram_mb", profile.get("ram_mb")) or infinity)
+    energy = profile.get("energy_joules")
+    throughput = float(profile.get("generation_tokens_per_second") or 0.0)
+    if preference == "memory":
+        return (ram, latency, -throughput)
+    if preference == "energy":
+        return (float(energy) if energy is not None else infinity, latency, ram, -throughput)
+    if preference == "quality":
+        return (-float(profile.get("quality") or 0.0), latency, ram, -throughput)
+    return (latency, ram, -throughput)
+
+
+def select_lowest_cost(profiles: list[dict[str, Any]], quality_threshold: float, preference: str = "balanced") -> dict[str, Any]:
+    """Apply the confidence-aware quality gate then a transparent cost ordering."""
     if not 0 <= quality_threshold <= 1:
         raise ValueError("quality_threshold must be between zero and one")
     eligible = [
         profile for profile in profiles
         if profile.get("quality") is not None
+        and profile.get("trial_count", 3) >= 3
         and (
             profile["quality_lower_confidence_bound"]
             if profile.get("quality_lower_confidence_bound") is not None
@@ -250,27 +282,16 @@ def select_lowest_cost(profiles: list[dict[str, Any]], quality_threshold: float,
     ]
     if not eligible:
         return {"selected": None, "quality_threshold": quality_threshold, "eligible_count": 0, "reason": "No measured profile meets the requested quality threshold."}
-    candidates = [
-        {
-            "profile": profile, "task_quality": profile["quality"],
-            "quality_lower_confidence_bound": profile.get("quality_lower_confidence_bound"),
-            "generation_tokens_per_second": profile.get("generation_tokens_per_second"),
-            "ttft_seconds": profile.get("ttft_seconds"), "peak_ram_mb": profile.get("peak_ram_mb", profile.get("ram_mb")),
-            "energy_proxy_joules": profile.get("energy_proxy_joules"),
-            "quality_per_estimated_watt": profile.get("quality_per_estimated_watt", profile.get("quality_per_watt")),
-            "quality_per_proxy_joule": profile.get("quality_per_proxy_joule"),
-        }
-        for profile in eligible
-    ]
-    scoring = score_candidates(candidates, {**LOWEST_COST_WEIGHTS, **(weights or {}), "task_quality": 0.0})
-    scored = [candidate for candidate in candidates if candidate.get("weighted_score") is not None]
-    winner = max(scored, key=lambda candidate: candidate["weighted_score"]) if scored else None
+    candidates = sorted(eligible, key=lambda profile: _cost_key(profile, preference))
+    winner = candidates[0] if candidates else None
+    if preference == "energy" and winner and winner.get("energy_joules") is None:
+        winner = None
     return {
-        "selected": winner["profile"] if winner else None, "quality_threshold": quality_threshold,
-        "eligible_count": len(eligible), "scoring": scoring, "candidates": candidates,
+        "selected": winner, "quality_threshold": quality_threshold,
+        "eligible_count": len(eligible), "scoring": {"objective": preference, "proxy_energy_used": False}, "candidates": candidates,
         "reason": (
-            "Quality threshold satisfied using the conservative lower confidence bound when available; selected by normalized measured cost/efficiency score."
-            if winner else "Eligible profiles have no common measured cost metrics."
+            "Quality threshold satisfied using the conservative lower confidence bound when available; selected by the documented lexicographic measured-cost objective."
+            if winner else ("Energy-first selection requires comparable physical-meter joule readings." if preference == "energy" else "Eligible profiles have no measured cost metrics.")
         ),
     }
 

@@ -28,6 +28,8 @@ def verify_jsonl_store() -> dict[str, Any]:
     details: dict[str, Any] = {}
     total_records = 0
     total_bytes = 0
+    invalid_records = 0
+    provenance_gaps = 0
 
     for name, directory in categories.items():
         count = 0
@@ -38,7 +40,17 @@ def verify_jsonl_store() -> dict[str, Any]:
                 file_count += 1
                 byte_count += jsonl_file.stat().st_size
                 with jsonl_file.open("r", encoding="utf-8", errors="replace") as f:
-                    count += sum(1 for line in f if line.strip())
+                    for line_number, line in enumerate(f, start=1):
+                        if not line.strip():
+                            continue
+                        try:
+                            record = json.loads(line)
+                        except json.JSONDecodeError:
+                            invalid_records += 1
+                            continue
+                        count += 1
+                        if name == "full_matrix_benchmarks" and record.get("phase") in {"warmup", "measured"} and record.get("success") and not record.get("provenance"):
+                            provenance_gaps += 1
         details[name] = {"files": file_count, "records": count, "bytes": byte_count}
         total_records += count
         total_bytes += byte_count
@@ -54,11 +66,14 @@ def verify_jsonl_store() -> dict[str, Any]:
     total_records += history_records
     total_bytes += history_bytes
 
+    status = "operational" if not invalid_records and not provenance_gaps else "degraded"
     return {
         "primary_store": "jsonl",
-        "status": "operational",
+        "status": status,
         "total_records": total_records,
         "total_bytes": total_bytes,
+        "invalid_json_records": invalid_records,
+        "provenance_gaps": provenance_gaps,
         "categories": details,
         "note": "JSONL is Orbit's authoritative local evidence store; MySQL functions as an optional mirror.",
     }

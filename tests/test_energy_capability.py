@@ -27,3 +27,10 @@ def test_energy_probe_reports_a_valid_configured_physical_meter(tmp_path):
     report = probe(export)
     assert report["actual_energy_available"] is True
     assert report["source"] == "wall meter"
+
+
+def test_simulated_or_proxy_exports_are_never_accepted_as_physical_energy(tmp_path):
+    export = tmp_path / "simulated.json"
+    export.write_text('{"source":"cpu_time_proxy_simulated","measurement_kind":"estimated_proxy","cumulative_joules":123.5}', encoding="utf-8")
+    assert read_meter_export(export) is None
+    assert probe(export)["actual_energy_available"] is False

@@ -32,5 +32,6 @@ def test_benchmark_repository_marks_energy_proxy_as_estimated(tmp_path):
         from database.schema import EnergyMetric, QualityResult
         assert session.query(QualityResult).one().score == 1.0
         energy = session.query(EnergyMetric).one()
-        assert energy.energy_joules == 2.0
+        assert energy.energy_joules is None
+        assert energy.energy_proxy_joules == 2.0
         assert energy.measured is False

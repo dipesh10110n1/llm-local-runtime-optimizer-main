@@ -66,10 +66,19 @@ def code_execution(answer: str, tests: list[str], timeout_seconds: int = 3) -> d
 
 
 def instruction_following(answer: str, metadata: dict[str, Any]) -> dict[str, Any]:
-    """Conservative basic checks; IFEval official checker should be used when its dependency is supplied."""
-    checks = metadata.get("checks", [])
-    passed = sum(1 for check in checks if str(check).lower() in answer.lower())
-    return {"score": passed / len(checks) if checks else None, "metric": "instruction_following", "status": "requires_official_ifeval_checker" if not checks else "basic_check"}
+    """Do not present heuristic IFEval checks as benchmark-quality evidence.
+
+    The preparation pipeline preserves official instruction metadata, but the
+    official checker is not vendored in this prototype.  Returning an
+    unavailable score is safer than allowing substring checks to pass a model
+    through a quality gate.
+    """
+    return {
+        "score": None,
+        "metric": "ifeval_official_required",
+        "status": "unavailable_without_official_ifeval_checker",
+        "instruction_ids": metadata.get("instruction_id_list", []),
+    }
 
 
 def evaluate(sample: dict[str, Any], answer: str) -> dict[str, Any]:

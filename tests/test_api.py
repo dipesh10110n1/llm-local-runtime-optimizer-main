@@ -38,11 +38,21 @@ def test_live_api_selection_is_persisted_with_private_telemetry(monkeypatch):
     assert res["telemetry_persistence"]["status"] == "persisted"
 
 
-def test_generate_uses_registry_fallback_when_historical_filename_is_not_a_model_id(monkeypatch):
+def test_generate_launches_the_measured_recommendation_before_inference(monkeypatch):
+    model = {"model_id": "qwen-test", "path": "models/test.gguf", "backends": ["llama.cpp"]}
+    profile = {"model_id": "qwen-test", "sample_count": 3, "quality": 0.8, "latency_seconds": 1.0, "ram_mb": 500.0, "configuration": {"configuration_id": "qwen-test:t2:c1024", "backend": "llama.cpp", "threads": 2, "context_size": 1024, "cache": "server-default", "retrieval": {"enabled": False}}}
+    monkeypatch.setattr("api.app.historical_profiles", lambda: [profile])
+    monkeypatch.setattr("api.app.get_model", lambda _: model)
+    monkeypatch.setattr("api.app.configuration_is_safe", lambda *_: (True, "safe", 1.0))
+    monkeypatch.setattr("api.app.ensure_runtime", lambda *args: {"switched": True})
+    monkeypatch.setattr("api.app.prepare_prompt", lambda prompt, _: (f"prepared:{prompt}", {"retrieval_enabled": False}))
     monkeypatch.setattr("api.app.generate", lambda *args, **kwargs: {"answer": "ok", "measurement_kind": "measured"})
+    monkeypatch.setattr("api.app.record_selection", lambda *_: {"status": "persisted"})
     body = GenerateBody(prompt="hello", task_type="all")
     res = generate_request(body)
     assert res["answer"] == "ok"
+    assert res["configuration"]["threads"] == 2
+    assert res["recommendation_is_historical"] is True
 
 
 def test_store_status_endpoint():

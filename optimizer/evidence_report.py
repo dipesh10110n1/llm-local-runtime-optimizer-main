@@ -81,6 +81,12 @@ def selection_history(limit: int = 20) -> list[dict[str, Any]]:
 
 def profile_pareto_view(task_type: str = "spider_text_to_sql") -> list[dict[str, Any]]:
     """Return non-dominated calibrated profiles with their measurement provenance."""
+    rows = profile_comparison_view(task_type)
+    return pareto_frontier(rows)
+
+
+def profile_comparison_view(task_type: str = "spider_text_to_sql") -> list[dict[str, Any]]:
+    """Return all selectable benchmark profiles for dashboard trade-off views."""
     rows = []
     for profile in latest_profiles():
         if profile.get("task_type") != task_type or profile.get("quality") is None:
@@ -96,10 +102,17 @@ def profile_pareto_view(task_type: str = "spider_text_to_sql") -> list[dict[str,
             "energy_joules": profile.get("energy_joules"),
             "energy_proxy_joules": profile.get("energy_proxy_joules"),
             "sample_count": profile.get("sample_count"),
+            "trial_count": profile.get("trial_count"),
+            "unique_prompt_count": profile.get("unique_prompt_count"),
+            "reproducibility_status": profile.get("reproducibility_status", "legacy/unverified"),
             "measurement_kind": profile.get("measurement_kind"),
             "dataset": profile.get("dataset"),
         })
-    return pareto_frontier(rows)
+    # Keep dominated profiles in the comparison view.  The dashboard needs to
+    # disclose complete measured coverage (including Q5/Q6 profiles), while
+    # ``profile_pareto_view`` is the explicit filtered view used for Pareto
+    # presentation.
+    return rows
 
 
 def readiness_report() -> dict[str, Any]:

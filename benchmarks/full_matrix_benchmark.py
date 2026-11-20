@@ -22,8 +22,8 @@ from core.model_registry import load_models
 from core.provenance import benchmark_provenance
 from core.settings import ROOT
 from database.telemetry import mirror_benchmark_trial, mirror_hardware_profile
-from optimizer.configuration_catalog import cache_server_arguments
-from optimizer.live_matrix import full_live_candidates, stratified_sample
+from optimizer.configuration_catalog import baseline_configuration, cache_server_arguments
+from optimizer.live_matrix import configuration_is_safe, full_live_candidates, stratified_sample
 from optimizer.task_quality import evaluate_spider_sql
 from runtime.clients import InferenceError, generate, tokenize
 from runtime.prompt_pipeline import prepare_prompt
@@ -158,8 +158,9 @@ def run(
     max_configurations: int | None = None,
     resident_only: bool = False,
     sampling_strategy: str = "stratified",
+    baseline_only: bool = False,
 ) -> tuple[Path, Path]:
-    """Run all safe candidates, or a sampled/prefix subset for a smoke study."""
+    """Run all safe candidates, or a complete baseline subset across models."""
     if trials < 1:
         raise ValueError("trials must be at least one")
     if max_configurations is not None and max_configurations < 1:
@@ -172,6 +173,8 @@ def run(
     missing = sorted(set(model_ids or []) - {item["model_id"] for item in selected_models})
     if missing:
         raise FileNotFoundError(f"Requested local models are unavailable: {', '.join(missing)}")
+    if resident_only and baseline_only:
+        raise ValueError("baseline_only and resident_only cannot be combined")
     if resident_only:
         state = active_runtime_state()
         if not state:
@@ -184,6 +187,17 @@ def run(
             for configuration in resident_configurations(active_model, state, corpus_dir)
         ]
         safety_skips = []
+    elif baseline_only:
+        candidates = []
+        safety_skips = []
+        for model in selected_models:
+            configuration = baseline_configuration(model)
+            safe, reason, required = configuration_is_safe(model, configuration)
+            candidate = {"model": model, "configuration": configuration, "required_mb": required}
+            if safe:
+                candidates.append(candidate)
+            else:
+                safety_skips.append(candidate | {"reason": f"RAM safety skip: {reason}"})
     else:
         candidates, safety_skips = full_live_candidates(selected_models)
     deferred: list[dict[str, Any]] = []
@@ -246,7 +260,11 @@ def run(
     summary_path.write_text(json.dumps({
         "experiment_id": experiment_id, "dataset": "spider_dev", "sample_limit": limit, "trials": trials,
         "models": [item["model_id"] for item in selected_models], "candidate_count": len(candidates),
-        "execution_mode": "resident_prompt_variants" if resident_only else "full_safe_matrix",
+        "execution_mode": (
+            "resident_prompt_variants" if resident_only
+            else "baseline_per_local_model" if baseline_only
+            else "full_safe_matrix"
+        ),
         "matrix_dimensions": {"threads": [2, 4, 6, 8], "contexts": [1024, 2048, 4096], "cache": ["enabled", "disabled"], "compression": ["none", "whitespace", "conservative"], "retrieval": [False, True]},
         "sample_selection": "first development example from each database, then remaining source order",
         "database_ids": [sample["db_id"] for sample in samples], "retrieval_corpus": corpus_dir,
@@ -266,6 +284,7 @@ if __name__ == "__main__":
     parser.add_argument("--sampling-strategy", choices=["stratified", "prefix"], default="stratified",
                         help="How to select configurations when --max-configurations is set (default: stratified).")
     parser.add_argument("--resident-only", action="store_true", help="Reuse the active Orbit model without a restart; evaluates prompt/retrieval variants only.")
+    parser.add_argument("--baseline-only", action="store_true", help="Benchmark the baseline configuration for every safe local model.")
     arguments = parser.parse_args()
-    raw, summary = run(arguments.limit, arguments.trials, arguments.max_output_tokens, arguments.model_ids, arguments.max_configurations, arguments.resident_only, arguments.sampling_strategy)
+    raw, summary = run(arguments.limit, arguments.trials, arguments.max_output_tokens, arguments.model_ids, arguments.max_configurations, arguments.resident_only, arguments.sampling_strategy, arguments.baseline_only)
     print(json.dumps({"raw_results": str(raw), "summary": str(summary)}, indent=2))

@@ -113,7 +113,10 @@ class ExperimentRepository:
             ))
             session.add(EnergyMetric(
                 result_id=result.result_id, energy_joules=telemetry.get("energy_joules"),
+                energy_proxy_joules=telemetry.get("energy_proxy_joules"),
                 source=telemetry.get("energy_source"), measured=telemetry.get("energy_measurement_kind") == "measured",
+                measurement_kind=telemetry.get("energy_measurement_kind") or "unavailable",
+                proxy_method=telemetry.get("energy_proxy_method"),
             ))
 
     def save_benchmark_trial(self, experiment_id: str, kind: str, record: dict[str, Any]) -> None:
@@ -162,11 +165,13 @@ class ExperimentRepository:
             session.add(QualityResult(result_id=result.result_id, metric=quality.get("metric", "unavailable"), score=quality.get("score"), source="automated", details_json=quality))
             session.add(PerformanceMetric(result_id=result.result_id, ttft_seconds=telemetry.get("ttft_seconds"), tpot_ms=None, end_to_end_seconds=telemetry.get("end_to_end_seconds"), generation_tokens_per_second=telemetry.get("generation_tokens_per_second"), generated_tokens=telemetry.get("generated_tokens")))
             session.add(ResourceMetric(result_id=result.result_id, process_memory_mb=telemetry.get("peak_ram_mb"), system_memory_percent=None, cpu_percent=telemetry.get("average_system_cpu_percent"), gpu_utilization_percent=None))
-            actual_energy = telemetry.get("energy_joules")
             session.add(EnergyMetric(result_id=result.result_id,
-                energy_joules=actual_energy if actual_energy is not None else telemetry.get("energy_proxy_joules"),
-                source=telemetry.get("energy_source") if actual_energy is not None else ("estimated_cpu_utilisation_proxy" if telemetry.get("energy_proxy_joules") is not None else None),
-                measured=telemetry.get("energy_measurement_kind") == "measured"))
+                energy_joules=telemetry.get("energy_joules"),
+                energy_proxy_joules=telemetry.get("energy_proxy_joules"),
+                source=telemetry.get("energy_source"),
+                measured=telemetry.get("energy_measurement_kind") == "measured",
+                measurement_kind=telemetry.get("energy_measurement_kind") or "unavailable",
+                proxy_method=telemetry.get("energy_proxy_method")))
 
     def save_recommendation(self, request: dict[str, Any], selected: str | None, explanation: str, predicted: bool = True) -> None:
         with self.sessions.begin() as session:

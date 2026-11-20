@@ -34,6 +34,42 @@ def parse_judgement(text: str, candidate_count: int) -> int | None:
     return index if 0 <= index < candidate_count else None
 
 
+def _model_balanced_runs(runs: list[dict[str, Any]], limit: int) -> list[dict[str, Any]]:
+    """Select a bounded matrix sample without repeatedly choosing one model first.
+
+    A configuration-matrix run can contain dozens of settings per model.  Taking
+    a prefix therefore makes a small smoke run look like an all-model comparison
+    while it really measures only the first model.  Pick one deterministic
+    configuration per model before selecting a second configuration for any
+    model.  This is a live exploration aid, not a substitute for the complete
+    benchmark campaign.
+    """
+    if limit >= len(runs):
+        return list(runs)
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for run in runs:
+        model_id = str(run["model"]["model_id"])
+        grouped.setdefault(model_id, []).append(run)
+    groups = [
+        sorted(entries, key=lambda entry: str(entry["configuration"]["configuration_id"]))
+        for _, entries in sorted(grouped.items())
+    ]
+    selected: list[dict[str, Any]] = []
+    offsets = [0] * len(groups)
+    while len(selected) < limit:
+        made_progress = False
+        for index, entries in enumerate(groups):
+            if len(selected) >= limit:
+                break
+            if offsets[index] < len(entries):
+                selected.append(entries[offsets[index]])
+                offsets[index] += 1
+                made_progress = True
+        if not made_progress:
+            break
+    return selected
+
+
 def compare_on_spot(
     prompt: str,
     models: list[dict[str, Any]],
@@ -105,14 +141,29 @@ def compare_on_spot(
         return {"selected": None, "task_type": feasibility["task_type"], "available_mb": feasibility["available_mb"], "candidates": feasibility["candidates"], "reason": feasibility["reason"]}
 
     total_candidate_count = len(runs)
+    candidate_model_ids = sorted({run["model"]["model_id"] for run in runs})
     deferred_runs: list[dict[str, Any]] = []
     if max_live_candidates is not None and len(runs) > max_live_candidates:
-        deferred_runs, runs = runs[max_live_candidates:], runs[:max_live_candidates]
+        scheduled_runs = _model_balanced_runs(runs, max_live_candidates)
+        scheduled_keys = {
+            (run["model"]["model_id"], run["configuration"]["configuration_id"])
+            for run in scheduled_runs
+        }
+        deferred_runs = [
+            run for run in runs
+            if (run["model"]["model_id"], run["configuration"]["configuration_id"])
+            not in scheduled_keys
+        ]
+        runs = scheduled_runs
+    scheduled_model_ids = sorted({run["model"]["model_id"] for run in runs})
+    deferred_model_ids = sorted({run["model"]["model_id"] for run in deferred_runs})
     if dry_run:
         return {
             "selected": None, "task_type": feasibility["task_type"], "available_mb": feasibility["available_mb"],
             "candidate_count": total_candidate_count, "scheduled_candidate_count": len(runs),
             "deferred_candidate_count": len(deferred_runs), "matrix_safety_skips": matrix_skips,
+            "candidate_model_ids": candidate_model_ids, "scheduled_model_ids": scheduled_model_ids,
+            "deferred_model_ids": deferred_model_ids,
             "quality_threshold": quality_threshold,
             "reason": "Dry run only: no model was loaded or response generated.",
         }
@@ -162,6 +213,8 @@ def compare_on_spot(
             "generated_tokens": response.get("generated_tokens"),
             "generation_tokens_per_second": response.get("generation_tokens_per_second"),
             "peak_ram_mb": response.get("peak_ram_mb"),
+            "energy_joules": response.get("energy_joules"),
+            "energy_source": response.get("energy_source"),
             "energy_proxy_watts": watts,
             "energy_proxy_joules": joules,
             "energy_proxy_method": response.get("energy_proxy_method"),
@@ -170,10 +223,8 @@ def compare_on_spot(
             "task_quality_detail": quality,
             "quality_per_proxy_joule": task_quality / joules if task_quality is not None and joules and joules > 0 else None,
             "quality_per_estimated_watt": task_quality / watts if task_quality is not None and watts else None,
-            # Compatibility alias. Consumers must read the explicit estimate
-            # label above and must not present this as physical-meter evidence.
-            "quality_per_watt": task_quality / watts if task_quality is not None and watts else None,
-            "energy_unit_note": "quality_per_proxy_joule uses estimated proxy joules; quality_per_estimated_watt uses instantaneous watts proxy",
+            "quality_per_measured_joule": task_quality / response["energy_joules"] if task_quality is not None and response.get("energy_joules") and response["energy_joules"] > 0 else None,
+            "energy_unit_note": "Proxy energy is displayed for exploration only and is excluded from selection; physical joules are used only when a validated meter is available.",
             "prompt_preparation": preparation,
         })
 
@@ -237,6 +288,8 @@ def compare_on_spot(
         "live_comparison": comparisons, "scoring": scoring,
         "comparison_failures": failures, "matrix_safety_skips": matrix_skips,
         "deferred_candidate_count": len(deferred_runs), "candidate_count": total_candidate_count,
+        "candidate_model_ids": candidate_model_ids, "scheduled_model_ids": scheduled_model_ids,
+        "deferred_model_ids": deferred_model_ids,
         "quality_threshold": quality_threshold,
         "quality_rejections": quality_rejections,
         "winner_index": winner_index, "resident_fallback": resident_fallback,

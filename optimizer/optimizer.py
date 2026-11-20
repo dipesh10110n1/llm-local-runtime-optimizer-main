@@ -28,7 +28,7 @@ class Optimizer:
         frontier = pareto_frontier(eligible or candidates)
         threshold_selection = None
         if request.minimum_quality is not None and eligible:
-            threshold_selection = select_lowest_cost(eligible, request.minimum_quality)
+            threshold_selection = select_lowest_cost(eligible, request.minimum_quality, request.preference)
             selected = threshold_selection.get("selected")
             ranked = [selected] if selected else []
         else:

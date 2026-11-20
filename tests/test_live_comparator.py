@@ -1,4 +1,4 @@
-from optimizer.live_comparator import compare_on_spot, parse_judgement
+from optimizer.live_comparator import _model_balanced_runs, compare_on_spot, parse_judgement
 
 
 def test_parses_local_judge_choice_only_when_valid():
@@ -7,6 +7,21 @@ def test_parses_local_judge_choice_only_when_valid():
     assert parse_judgement("WINNER: 3", 2) is None
     assert parse_judgement("WINNER: TIE", 2) is None
     assert parse_judgement("I cannot choose", 2) is None
+
+
+def test_matrix_sample_covers_each_model_before_repeating_a_model():
+    runs = [
+        {
+            "model": {"model_id": model_id},
+            "configuration": {"configuration_id": f"{model_id}:config-{configuration}"},
+        }
+        for model_id in ("a", "b", "c")
+        for configuration in (1, 2)
+    ]
+
+    selected = _model_balanced_runs(runs, 3)
+
+    assert [entry["model"]["model_id"] for entry in selected] == ["a", "b", "c"]
 
 
 def test_compare_on_spot_separates_proxy_joules_and_estimated_watts(monkeypatch):

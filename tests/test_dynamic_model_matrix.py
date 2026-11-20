@@ -98,6 +98,14 @@ def test_stratified_sample_picks_from_multiple_groups():
     assert len(keys) >= 2
 
 
+def test_stratified_sample_covers_each_model_before_repeating_one():
+    candidates = _make_diverse_candidates()
+
+    sample = stratified_sample(candidates, n=2)
+
+    assert {candidate["model"]["model_id"] for candidate in sample} == {"model-a", "model-b"}
+
+
 def test_stratified_sample_returns_all_when_n_gte_total():
     """When n >= total candidates, all candidates are returned (shuffled)."""
     candidates = _make_diverse_candidates()

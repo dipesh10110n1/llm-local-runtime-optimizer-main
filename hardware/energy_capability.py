@@ -11,6 +11,9 @@ from pathlib import Path
 from typing import Any
 
 
+_NON_PHYSICAL_SOURCE_MARKERS = ("proxy", "simulat", "estimate", "tdp", "cpu_time", "cpu-time")
+
+
 @dataclass(frozen=True)
 class EnergyReading:
     source: str
@@ -55,7 +58,7 @@ def probe(path: str | Path | None = None) -> dict[str, Any]:
 def read_meter_export(path: str | Path | None) -> EnergyReading | None:
     """Read a local physical-meter export with a cumulative joule counter.
 
-    Expected JSON: ``{"source": "meter name", "cumulative_joules": 123.4}``.
+    Expected JSON: ``{"source": "wall power meter", "cumulative_joules": 123.4}``.
     The file must be updated by the physical meter or its local software; this
     code does not invent, estimate, or write any energy reading.
     """
@@ -73,6 +76,14 @@ def read_meter_export(path: str | Path | None) -> EnergyReading | None:
         source = payload.get("source")
         joules = payload.get("cumulative_joules")
         if not isinstance(source, str) or not source.strip() or not isinstance(joules, (int, float)) or joules < 0:
+            return None
+        # A cumulative number is not proof of physical energy.  In particular,
+        # reject the bundled demonstration meter and any source that declares
+        # itself an estimate/proxy before it can enter the measured-energy path.
+        if any(marker in source.lower() for marker in _NON_PHYSICAL_SOURCE_MARKERS):
+            return None
+        declared_kind = payload.get("measurement_kind")
+        if declared_kind is not None and declared_kind not in {"physical_meter", "hardware_counter"}:
             return None
         return EnergyReading(source=source, cumulative_joules=float(joules))
     except (OSError, json.JSONDecodeError, TypeError, ValueError):

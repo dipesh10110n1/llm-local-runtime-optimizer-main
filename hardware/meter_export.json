@@ -1,5 +1,6 @@
 {
   "source": "cpu_time_proxy_simulated",
+  "measurement_kind": "estimated_proxy",
   "cumulative_joules": 3743912.8125,
   "cpu_user_seconds": 249594.18749999997,
   "estimated_tdp_watts": 15.0,

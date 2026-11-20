@@ -11,7 +11,7 @@ sent to a cloud service by this project.
 | Spider SQL execution score | Task-valid measured quality | Quality admission gate for Spider only |
 | TTFT, end-to-end time, generation tokens/s, model RSS | Direct local runtime measurements | Cost comparison |
 | CPU-utilisation energy proxy | Estimated, not physical energy | Exploratory comparison only |
-| Cumulative joule meter delta | Actual energy measurement | Energy constraints when source is present and monotonic |
+| Cumulative joule meter delta from an approved physical source | Actual energy measurement | Energy constraints when source is present, physical, and monotonic |
 | General chat quality without a labelled reference | Unavailable | Never treated as passing a quality threshold |
 
 ## Human oversight
@@ -35,7 +35,7 @@ place private prompts in benchmark datasets.
 |---|---|---|
 | Insufficient RAM | Preserve a 1.5 GiB reserve and skip unsafe candidates | Estimate may be conservative or imperfect for unusual workloads |
 | Missing quality evidence | Reject a thresholded live selection | General task quality suites must still be populated locally |
-| Missing physical energy meter | Return unavailable actual energy | Proxy must not be called measured energy |
+| Missing, simulated, or proxy energy meter | Return unavailable actual energy | Proxy must not be called measured energy or used for automatic ranking |
 | Runtime/model failure | Record failure and do not select it | Recovery remains a local operator action |
 | Retrieval mismatch | Show source path/chunk metadata | Lexical retrieval is not semantic grounding proof |
 | Uncertain experiments | Record sample count and lower confidence bound | Repeated trials and larger held-out samples are still required |

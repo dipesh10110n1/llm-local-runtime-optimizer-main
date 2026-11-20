@@ -1,4 +1,6 @@
-from benchmarks.full_matrix_benchmark import resident_configurations, summarize
+import pytest
+
+from benchmarks.full_matrix_benchmark import resident_configurations, run, summarize
 
 
 def test_full_matrix_summary_separates_measured_trials_from_warmups_and_skips():
@@ -23,3 +25,8 @@ def test_resident_configurations_keep_runtime_fixed_and_vary_prompt_features():
     assert all(config["resident_reuse"] for config in configs)
     assert {config["threads"] for config in configs} == {4}
     assert {config["retrieval"]["enabled"] for config in configs} == {False, True}
+
+
+def test_baseline_only_cannot_be_combined_with_resident_only():
+    with pytest.raises(ValueError, match="cannot be combined"):
+        run(limit=1, trials=1, resident_only=True, baseline_only=True)

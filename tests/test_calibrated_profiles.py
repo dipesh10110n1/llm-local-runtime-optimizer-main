@@ -1,10 +1,11 @@
 from optimizer.calibrated_profiles import _normalise_controlled_record, aggregate_records, aggregate_standard_quality_records, select_lowest_cost
 
 
-def _record(configuration_id: str, quality: float, latency: float, ram: float) -> dict:
+def _record(configuration_id: str, quality: float, latency: float, ram: float, trial: int = 1) -> dict:
     return {
         "phase": "measured", "success": True, "model_id": configuration_id.split(":")[0], "quantization": "Q4",
         "configuration": {"configuration_id": configuration_id}, "task_quality": {"score": quality},
+        "trial_number": trial, "prompt_id": f"prompt-{trial}",
         "quality_per_watt": quality / 20,
         "telemetry": {"end_to_end_seconds": latency, "ttft_seconds": latency / 2, "generation_tokens_per_second": 10 / latency, "peak_ram_mb": ram, "energy_proxy_joules": latency * 10},
     }
@@ -19,9 +20,9 @@ def test_profile_aggregation_requires_repeated_measured_trials():
 
 def test_quality_gate_selects_lowest_cost_eligible_profile():
     profiles = aggregate_records([
-        _record("fast", 0.8, 1, 500), _record("fast", 0.8, 1, 500),
-        _record("accurate", 0.9, 2, 800), _record("accurate", 0.9, 2, 800),
-    ], minimum_samples=2)
+        _record("fast", 0.8, 1, 500, 1), _record("fast", 0.8, 1, 500, 2), _record("fast", 0.8, 1, 500, 3),
+        _record("accurate", 0.9, 2, 800, 1), _record("accurate", 0.9, 2, 800, 2), _record("accurate", 0.9, 2, 800, 3),
+    ], minimum_samples=3)
     selection = select_lowest_cost(profiles, 0.8)
     assert selection["selected"]["configuration_id"] == "fast"
     assert selection["eligible_count"] == 2

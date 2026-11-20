@@ -37,6 +37,20 @@ def required_memory_mb(model: dict[str, Any], configuration: dict[str, Any]) -> 
     return model_size_mb * 1.3 + 300 + float(configuration["context_size"]) * 0.15
 
 
+def configuration_is_safe(
+    model: dict[str, Any], configuration: dict[str, Any], available_mb: float | None = None,
+    safety_reserve_mb: float | None = None,
+) -> tuple[bool, str, float]:
+    """Check one explicit configuration before a runtime switch."""
+    available = safe_available_memory_mb() if available_mb is None else available_mb
+    reserve = float(getattr(settings, "safety_reserve_mb", SAFETY_RESERVE_MB)) if safety_reserve_mb is None else safety_reserve_mb
+    required = required_memory_mb(model, configuration)
+    safe = required + reserve <= available
+    return safe, (
+        f"estimated {required:.0f} MiB plus {reserve:.0f} MiB reserve; available {available:.0f} MiB"
+    ), required
+
+
 def full_live_candidates(
     models: list[dict[str, Any]],
     available_mb: float | None = None,
@@ -64,10 +78,13 @@ def full_live_candidates(
 
 
 def stratified_sample(candidates: list[dict[str, Any]], n: int, seed: int = 42) -> list[dict[str, Any]]:
-    """Return n candidates picked evenly across (model_id, cache, compression, retrieval_enabled) groups.
+    """Return a deterministic sample that covers models before extra variants.
 
-    If n >= len(candidates), falls back to a reproducibly shuffled copy of all candidates.
-    Uses random.Random(seed) so results are deterministic across calls with the same seed.
+    Candidate coverage is the first stratum: a bounded campaign must not use
+    all of its slots on configuration variants of the first model. Within each
+    model, cache/compression/retrieval groups are then round-robined. If
+    ``n`` is at least the candidate count, the result is a reproducibly
+    shuffled copy of every candidate.
     """
     rng = random.Random(seed)
     if n >= len(candidates):
@@ -75,41 +92,50 @@ def stratified_sample(candidates: list[dict[str, Any]], n: int, seed: int = 42) 
         rng.shuffle(shuffled)
         return shuffled
 
-    # Group by the four stratification dimensions.
-    groups: dict[tuple[str, str, str, bool], list[dict[str, Any]]] = {}
+    # Group by model first, then by configuration properties.  This preserves
+    # configuration diversity while making a small subset representative of
+    # the available local model inventory.
+    model_groups: dict[str, dict[tuple[str, str, bool], list[dict[str, Any]]]] = {}
     for entry in candidates:
         cfg = entry["configuration"]
+        model_id = str(entry["model"]["model_id"])
         key = (
-            entry["model"]["model_id"],
             cfg.get("cache", ""),
             cfg.get("prompt_compression", cfg.get("compression", "")),
             bool(cfg.get("retrieval", {}).get("enabled", False)),
         )
-        groups.setdefault(key, []).append(entry)
+        model_groups.setdefault(model_id, {}).setdefault(key, []).append(entry)
 
-    # Shuffle each group independently for variety within strata.
-    group_lists = []
-    for key in sorted(groups):  # sorted for determinism before rng comes in
-        bucket = list(groups[key])
-        rng.shuffle(bucket)
-        group_lists.append(bucket)
+    # Each model keeps its own shuffled configuration groups.  Model ids are
+    # sorted for reproducibility; randomisation happens inside each group.
+    per_model_groups: list[list[list[dict[str, Any]]]] = []
+    for model_id in sorted(model_groups):
+        groups: list[list[dict[str, Any]]] = []
+        for key in sorted(model_groups[model_id]):
+            bucket = list(model_groups[model_id][key])
+            rng.shuffle(bucket)
+            groups.append(bucket)
+        rng.shuffle(groups)
+        per_model_groups.append(groups)
 
-    # Round-robin across groups until n candidates are collected.
+    # Round-robin models, then rotate through their configuration groups.
     result: list[dict[str, Any]] = []
-    indices = [0] * len(group_lists)
-    group_count = len(group_lists)
-    group_idx = 0
+    offsets = [[0] * len(groups) for groups in per_model_groups]
+    group_offsets = [0] * len(per_model_groups)
     while len(result) < n:
         # Advance to the next group that still has candidates.
-        exhausted = 0
-        while indices[group_idx] >= len(group_lists[group_idx]):
-            group_idx = (group_idx + 1) % group_count
-            exhausted += 1
-            if exhausted > group_count:
-                break  # All groups exhausted
-        if indices[group_idx] >= len(group_lists[group_idx]):
-            break  # No more candidates anywhere
-        result.append(group_lists[group_idx][indices[group_idx]])
-        indices[group_idx] += 1
-        group_idx = (group_idx + 1) % group_count
+        made_progress = False
+        for model_index, groups in enumerate(per_model_groups):
+            if len(result) >= n:
+                break
+            for _ in range(len(groups)):
+                group_index = group_offsets[model_index] % len(groups)
+                group_offsets[model_index] += 1
+                if offsets[model_index][group_index] < len(groups[group_index]):
+                    result.append(groups[group_index][offsets[model_index][group_index]])
+                    offsets[model_index][group_index] += 1
+                    made_progress = True
+                    break
+        if not made_progress:
+            break
     return result

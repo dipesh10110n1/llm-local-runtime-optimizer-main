@@ -101,8 +101,11 @@ class EnergyMetric(Base):
     metric_id: Mapped[int] = mapped_column(primary_key=True)
     result_id: Mapped[int] = mapped_column(ForeignKey("benchmark_results.result_id"))
     energy_joules: Mapped[float | None] = mapped_column(Float)
+    energy_proxy_joules: Mapped[float | None] = mapped_column(Float)
     source: Mapped[str | None] = mapped_column(String(128))
     measured: Mapped[bool] = mapped_column(default=False)
+    measurement_kind: Mapped[str] = mapped_column(String(32), default="unavailable")
+    proxy_method: Mapped[str | None] = mapped_column(Text)
 
 
 class OptimizationRecommendation(Base):
@@ -123,4 +126,22 @@ def make_engine(url: str):
 
 
 def create_schema(url: str) -> None:
-    Base.metadata.create_all(make_engine(url))
+    engine = make_engine(url)
+    Base.metadata.create_all(engine)
+    # ``create_all`` does not evolve an existing local MySQL installation.
+    # Keep this deliberately small and additive; versioned SQL remains the
+    # reviewable deployment path for clean installations.
+    from sqlalchemy import inspect, text
+    inspector = inspect(engine)
+    if "energy_metrics" not in inspector.get_table_names():
+        return
+    existing = {column["name"] for column in inspector.get_columns("energy_metrics")}
+    additions = {
+        "energy_proxy_joules": "DOUBLE NULL",
+        "measurement_kind": "VARCHAR(32) NOT NULL DEFAULT 'unavailable'",
+        "proxy_method": "TEXT NULL",
+    }
+    with engine.begin() as connection:
+        for name, declaration in additions.items():
+            if name not in existing:
+                connection.execute(text(f"ALTER TABLE energy_metrics ADD COLUMN {name} {declaration}"))

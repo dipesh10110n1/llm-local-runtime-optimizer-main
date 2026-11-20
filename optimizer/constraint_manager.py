@@ -7,7 +7,7 @@ def violations(candidate: dict[str, Any], request: Any) -> list[str]:
     failed: list[str] = []
     comparisons = (("quality", request.minimum_quality, ">="), ("latency_seconds", request.maximum_latency_seconds, "<="), ("ram_mb", request.maximum_ram_mb, "<="), ("energy_joules", request.maximum_energy_joules, "<="))
     for key, limit, operator in comparisons:
-        value = candidate.get(key)
+        value = candidate.get("quality_lower_confidence_bound") if key == "quality" and candidate.get("quality_lower_confidence_bound") is not None else candidate.get(key)
         if limit is None:
             continue
         if value is None:

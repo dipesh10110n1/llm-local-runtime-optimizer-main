@@ -14,8 +14,11 @@ from optimizer.request_router import record_selection
 from optimizer.profile_store import historical_profiles
 from optimizer.calibrated_profiles import latest_profiles
 from optimizer.evidence_report import profile_pareto_view, readiness_report, selection_history
-from optimizer.live_matrix import full_live_candidates
+from optimizer.live_matrix import configuration_is_safe, full_live_candidates
+from optimizer.configuration_catalog import baseline_configuration, cache_server_arguments
 from runtime.clients import InferenceError, backend_health, generate
+from runtime.prompt_pipeline import prepare_prompt
+from runtime.supervisor import RuntimeSwitchError, ensure_runtime
 from database.telemetry import verify_jsonl_store
 from database.verify_telemetry import verify as verify_mysql
 
@@ -103,16 +106,33 @@ def _validated_spider_database_path(value: str | None) -> str | None:
     return str(candidate)
 
 
+def _profile_configuration(profile: dict[str, Any] | None, model: dict[str, Any]) -> dict[str, Any]:
+    """Use the configuration that was measured, never a filename-only fallback."""
+    configuration = dict((profile or {}).get("configuration") or baseline_configuration(model))
+    required = {"configuration_id", "threads", "context_size"}
+    if not required.issubset(configuration):
+        configuration = baseline_configuration(model)
+    configuration.setdefault("backend", "llama.cpp")
+    configuration.setdefault("gpu_layers", 0)
+    configuration.setdefault("cache", "server-default")
+    configuration.setdefault("prompt_compression", "none")
+    configuration.setdefault("retrieval", {"enabled": False})
+    return configuration
+
+
 @app.post("/api/v1/generate")
 def generate_request(body: GenerateBody) -> dict[str, Any]:
     if body.live_compare:
-        decision = compare_on_spot(
-            body.prompt, load_models(), body.max_output_tokens, 0,
-            compare_all_models=True, full_configuration_matrix=body.full_configuration_matrix,
-            reference_sql=body.reference_sql, spider_database_path=_validated_spider_database_path(body.spider_database_path),
-            quality_threshold=body.minimum_quality,
-            weights=body.selection_weights, max_live_candidates=body.max_live_candidates, dry_run=body.dry_run,
-        )
+        try:
+            decision = compare_on_spot(
+                body.prompt, load_models(), body.max_output_tokens, 0,
+                compare_all_models=True, full_configuration_matrix=body.full_configuration_matrix,
+                reference_sql=body.reference_sql, spider_database_path=_validated_spider_database_path(body.spider_database_path),
+                quality_threshold=body.minimum_quality,
+                weights=body.selection_weights, max_live_candidates=body.max_live_candidates, dry_run=body.dry_run,
+            )
+        except ValueError as error:
+            raise HTTPException(422, str(error)) from error
         if body.dry_run:
             return {"answer": None, "selected_model": None, "configuration": None, "telemetry": None, "recommendation": decision, "recommendation_is_historical": False}
         if not decision.get("selected"):
@@ -123,17 +143,42 @@ def generate_request(body: GenerateBody) -> dict[str, Any]:
     recommendation = Optimizer().recommend(historical_profiles(), OptimizationRequest(**body.model_dump(exclude={
         "prompt", "model_id", "max_output_tokens", "live_compare", "full_configuration_matrix", "reference_sql", "spider_database_path", "selection_weights", "max_live_candidates", "dry_run",
     })))
-    selected_id = body.model_id or (recommendation["selected"] or {}).get("model_id")
-    # Historical filenames are not registry IDs; choose a locally registered fallback deliberately.
-    model = get_model(selected_id) or next((item for item in load_models() if item["available_locally"]), None)
+    selected_profile = recommendation.get("selected")
+    if body.minimum_quality is not None and not selected_profile:
+        raise HTTPException(422, recommendation.get("explanation", "No measured profile satisfies the requested constraints."))
+    selected_id = body.model_id or (selected_profile or {}).get("model_id")
+    model = get_model(selected_id) if selected_id else None
+    if model is None and body.model_id is None:
+        raise HTTPException(503, "No available registered model matches the measured recommendation.")
+    if model is None:
+        raise HTTPException(422, "The requested model is not registered and available locally.")
     if not model:
         raise HTTPException(503, "No requested local model is registered and available.")
-    configuration = {"backend": model["backends"][0], "max_output_tokens": body.max_output_tokens}
+    configuration = _profile_configuration(None if body.model_id else selected_profile, model)
+    safe, safety_reason, _ = configuration_is_safe(model, configuration)
+    if not safe:
+        raise HTTPException(422, f"The selected configuration is unsafe to start: {safety_reason}")
     try:
-        inference = generate(model, body.prompt, configuration)
-    except InferenceError as error:
+        runtime_state = ensure_runtime(model, configuration, cache_server_arguments(configuration))
+        prepared_prompt, preparation = prepare_prompt(body.prompt, configuration)
+        inference = generate(model, prepared_prompt, {
+            "backend": configuration["backend"], "max_output_tokens": body.max_output_tokens,
+            "temperature": 0,
+        })
+    except (InferenceError, RuntimeSwitchError) as error:
         raise HTTPException(503, str(error)) from error
-    return {"answer": inference["answer"], "selected_model": model["model_id"], "configuration": configuration, "telemetry": inference, "recommendation": recommendation, "recommendation_is_historical": bool(recommendation["selected"])}
+    execution_decision = {
+        "selected": {"model": model}, "configuration": configuration,
+        "task_type": body.task_type, "runtime_switched": runtime_state["switched"],
+    }
+    persistence = record_selection(execution_decision, inference | {"runtime_switched": runtime_state["switched"]})
+    return {
+        "answer": inference["answer"], "selected_model": model["model_id"], "configuration": configuration,
+        "telemetry": inference, "prompt_preparation": preparation, "recommendation": recommendation,
+        "telemetry_persistence": persistence,
+        "recommendation_is_historical": bool(selected_profile and body.model_id is None),
+        "user_override": bool(body.model_id and (not selected_profile or body.model_id != selected_profile.get("model_id"))),
+    }
 
 
 @app.get("/api/v1/experiments")

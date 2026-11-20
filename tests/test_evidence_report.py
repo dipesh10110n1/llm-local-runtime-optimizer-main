@@ -10,6 +10,25 @@ def test_dataset_readiness_reports_missing_local_data_without_downloading(monkey
     assert all(not row["prepared"] for row in rows)
 
 
+def test_profile_comparison_view_keeps_dominated_profiles(monkeypatch):
+    profiles = [
+        {
+            "model_id": "fast", "configuration_id": "fast:t4", "task_type": "spider_text_to_sql",
+            "quality": 0.5, "latency_seconds": 1.0, "peak_ram_mb": 100.0,
+        },
+        {
+            "model_id": "slow", "configuration_id": "slow:t4", "task_type": "spider_text_to_sql",
+            "quality": 0.4, "latency_seconds": 2.0, "peak_ram_mb": 200.0,
+        },
+    ]
+    monkeypatch.setattr(evidence_report, "latest_profiles", lambda: profiles)
+
+    rows = evidence_report.profile_comparison_view()
+
+    assert {row["model_id"] for row in rows} == {"fast", "slow"}
+    assert [row["model_id"] for row in evidence_report.profile_pareto_view()] == ["fast"]
+
+
 def test_selection_history_removes_answer_text(monkeypatch, tmp_path):
     history = tmp_path / "history.jsonl"
     history.write_text(json.dumps({

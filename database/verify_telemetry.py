@@ -29,11 +29,14 @@ def verify(url: str | None = None) -> dict[str, Any]:
         with engine.connect() as connection:
             connection.execute(text("SELECT 1"))
             names = set(connection.execute(text("SHOW TABLES")).scalars())
+            energy_columns = set(connection.execute(text("SHOW COLUMNS FROM energy_metrics")).scalars()) if "energy_metrics" in names else set()
         return {
             "configured": True, "connected": True,
             "required_tables_present": sorted(REQUIRED_TABLES & names),
             "missing_tables": sorted(REQUIRED_TABLES - names),
-            "ready": REQUIRED_TABLES.issubset(names),
+            "energy_columns_present": sorted({"energy_joules", "energy_proxy_joules", "measurement_kind", "proxy_method"} & energy_columns),
+            "missing_energy_columns": sorted({"energy_joules", "energy_proxy_joules", "measurement_kind", "proxy_method"} - energy_columns),
+            "ready": REQUIRED_TABLES.issubset(names) and {"energy_joules", "energy_proxy_joules", "measurement_kind", "proxy_method"}.issubset(energy_columns),
         }
     except SQLAlchemyError as error:
         return {"configured": True, "connected": False, "ready": False, "reason": error.__class__.__name__}

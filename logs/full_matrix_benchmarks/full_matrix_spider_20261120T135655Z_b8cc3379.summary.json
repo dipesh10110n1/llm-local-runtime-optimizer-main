@@ -1,0 +1,483 @@
+{
+  "experiment_id": "full_matrix_spider_20261120T135655Z_b8cc3379",
+  "dataset": "spider_dev",
+  "sample_limit": 1,
+  "trials": 3,
+  "models": [
+    "qwen2.5-0.5b-q4_k_m",
+    "qwen2.5-1.5b-q4_k_m",
+    "qwen2.5-3b-q4_k_m",
+    "qwen2.5-1.5b-q5_k_m",
+    "qwen2.5-1.5b-q6_k"
+  ],
+  "candidate_count": 5,
+  "execution_mode": "full_safe_matrix",
+  "matrix_dimensions": {
+    "threads": [
+      2,
+      4,
+      6,
+      8
+    ],
+    "contexts": [
+      1024,
+      2048,
+      4096
+    ],
+    "cache": [
+      "enabled",
+      "disabled"
+    ],
+    "compression": [
+      "none",
+      "whitespace",
+      "conservative"
+    ],
+    "retrieval": [
+      false,
+      true
+    ]
+  },
+  "sample_selection": "first development example from each database, then remaining source order",
+  "database_ids": [
+    "concert_singer"
+  ],
+  "retrieval_corpus": "logs/retrieval_corpora/spider_schema_20926a3d94a2",
+  "summary": {
+    "configurations": {
+      "qwen2.5-0.5b-q4_k_m:t2:c1024:cpu:cache-prompt-cache-enabled:compress-conservative:retrieval-on": {
+        "model_id": "qwen2.5-0.5b-q4_k_m",
+        "quantization": "Q4_K_M",
+        "configuration": {
+          "configuration_id": "qwen2.5-0.5b-q4_k_m:t2:c1024:cpu:cache-prompt-cache-enabled:compress-conservative:retrieval-on",
+          "backend": "llama.cpp",
+          "threads": 2,
+          "context_size": 1024,
+          "gpu_layers": 0,
+          "cache": "prompt-cache-enabled",
+          "prompt_compression": "conservative",
+          "retrieval": {
+            "enabled": true,
+            "top_k": 3,
+            "corpus_dir": "logs/retrieval_corpora/spider_schema_20926a3d94a2"
+          }
+        },
+        "successful_trials": 3,
+        "task_quality": {
+          "count": 3,
+          "mean": 1.0,
+          "median": 1.0,
+          "stddev": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "metrics": {
+          "end_to_end_seconds": {
+            "count": 3,
+            "mean": 0.32883716665674,
+            "median": 0.33549199998378754,
+            "stddev": 0.03261390551106726,
+            "min": 0.2934091000352055,
+            "max": 0.357610399951227
+          },
+          "ttft_seconds": {
+            "count": 3,
+            "mean": 0.0601243000322332,
+            "median": 0.05958920007105917,
+            "stddev": 0.003090095529073466,
+            "min": 0.05733670003246516,
+            "max": 0.06344699999317527
+          },
+          "prompt_processing_seconds": {
+            "count": 3,
+            "mean": 0.038239,
+            "median": 0.038204,
+            "stddev": 0.0056995805986054795,
+            "min": 0.032557,
+            "max": 0.043956
+          },
+          "prompt_tokens_per_second": {
+            "count": 3,
+            "mean": 26.546884369070572,
+            "median": 26.175269605276934,
+            "stddev": 3.9956508256587484,
+            "min": 22.750022750022747,
+            "max": 30.71536075191203
+          },
+          "generation_tokens_per_second": {
+            "count": 3,
+            "mean": 30.124497967284213,
+            "median": 29.407656283313358,
+            "stddev": 3.82160214542566,
+            "min": 26.712077197903103,
+            "max": 34.253760420636176
+          },
+          "peak_ram_mb": {
+            "count": 3,
+            "mean": 638.3515625,
+            "median": 638.3515625,
+            "stddev": 0.0625,
+            "min": 638.2890625,
+            "max": 638.4140625
+          },
+          "energy_proxy_joules": {
+            "count": 3,
+            "mean": 6.004129690393602,
+            "median": 5.926466179713606,
+            "stddev": 1.6930409931944743,
+            "min": 4.351256953522097,
+            "max": 7.734665937945101
+          }
+        }
+      },
+      "qwen2.5-1.5b-q4_k_m:t8:c4096:cpu:cache-prompt-cache-enabled:compress-none:retrieval-on": {
+        "model_id": "qwen2.5-1.5b-q4_k_m",
+        "quantization": "Q4_K_M",
+        "configuration": {
+          "configuration_id": "qwen2.5-1.5b-q4_k_m:t8:c4096:cpu:cache-prompt-cache-enabled:compress-none:retrieval-on",
+          "backend": "llama.cpp",
+          "threads": 8,
+          "context_size": 4096,
+          "gpu_layers": 0,
+          "cache": "prompt-cache-enabled",
+          "prompt_compression": "none",
+          "retrieval": {
+            "enabled": true,
+            "top_k": 3,
+            "corpus_dir": "logs/retrieval_corpora/spider_schema_20926a3d94a2"
+          }
+        },
+        "successful_trials": 3,
+        "task_quality": {
+          "count": 3,
+          "mean": 1.0,
+          "median": 1.0,
+          "stddev": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "metrics": {
+          "end_to_end_seconds": {
+            "count": 3,
+            "mean": 0.6741432000029212,
+            "median": 0.644755500019528,
+            "stddev": 0.07999318718120814,
+            "min": 0.6130005000159144,
+            "max": 0.764673599973321
+          },
+          "ttft_seconds": {
+            "count": 3,
+            "mean": 0.0630217333479474,
+            "median": 0.062096299952827394,
+            "stddev": 0.010951215850588286,
+            "min": 0.05256260000169277,
+            "max": 0.07440630008932203
+          },
+          "prompt_processing_seconds": {
+            "count": 3,
+            "mean": 0.051118333333333335,
+            "median": 0.049102,
+            "stddev": 0.004997500008337501,
+            "min": 0.047444,
+            "max": 0.056809
+          },
+          "prompt_tokens_per_second": {
+            "count": 3,
+            "mean": 19.68203155142875,
+            "median": 20.365769215103256,
+            "stddev": 1.8354555496630172,
+            "min": 17.602844619690543,
+            "max": 21.077480819492454
+          },
+          "generation_tokens_per_second": {
+            "count": 3,
+            "mean": 18.212862542850907,
+            "median": 19.31230632829165,
+            "stddev": 2.2038068986894404,
+            "min": 15.675634079398511,
+            "max": 19.650647220862556
+          },
+          "peak_ram_mb": {
+            "count": 3,
+            "mean": 1378.72265625,
+            "median": 1378.73046875,
+            "stddev": 0.03964410767614148,
+            "min": 1378.6796875,
+            "max": 1378.7578125
+          },
+          "energy_proxy_joules": {
+            "count": 3,
+            "mean": 22.069725290450847,
+            "median": 19.635760104969716,
+            "stddev": 5.125197189956636,
+            "min": 18.615037267358275,
+            "max": 27.958378499024548
+          }
+        }
+      },
+      "qwen2.5-1.5b-q5_k_m:t6:c1024:cpu:cache-prompt-cache-enabled:compress-conservative:retrieval-off": {
+        "model_id": "qwen2.5-1.5b-q5_k_m",
+        "quantization": "Q5_K_M",
+        "configuration": {
+          "configuration_id": "qwen2.5-1.5b-q5_k_m:t6:c1024:cpu:cache-prompt-cache-enabled:compress-conservative:retrieval-off",
+          "backend": "llama.cpp",
+          "threads": 6,
+          "context_size": 1024,
+          "gpu_layers": 0,
+          "cache": "prompt-cache-enabled",
+          "prompt_compression": "conservative",
+          "retrieval": {
+            "enabled": false,
+            "top_k": 3,
+            "corpus_dir": "logs/retrieval_corpora/spider_schema_20926a3d94a2"
+          }
+        },
+        "successful_trials": 3,
+        "task_quality": {
+          "count": 3,
+          "mean": 1.0,
+          "median": 1.0,
+          "stddev": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "metrics": {
+          "end_to_end_seconds": {
+            "count": 3,
+            "mean": 0.5574186999971668,
+            "median": 0.4658593999920413,
+            "stddev": 0.16247605590979686,
+            "min": 0.46138460002839565,
+            "max": 0.7450120999710634
+          },
+          "ttft_seconds": {
+            "count": 3,
+            "mean": 0.10169169997485976,
+            "median": 0.10083659994415939,
+            "stddev": 0.0051370073252450695,
+            "min": 0.09703589999116957,
+            "max": 0.1072025999892503
+          },
+          "prompt_processing_seconds": {
+            "count": 3,
+            "mean": 0.07638233333333333,
+            "median": 0.07665000000000001,
+            "stddev": 0.0006120917687188205,
+            "min": 0.075682,
+            "max": 0.076815
+          },
+          "prompt_tokens_per_second": {
+            "count": 3,
+            "mean": 13.092595528147678,
+            "median": 13.04631441617743,
+            "stddev": 0.10536630955109459,
+            "min": 13.018290698431297,
+            "max": 13.213181469834307
+          },
+          "generation_tokens_per_second": {
+            "count": 3,
+            "mean": 14.180337452005924,
+            "median": 16.47935137272997,
+            "stddev": 4.203254968043926,
+            "min": 9.3290399018585,
+            "max": 16.7326210814293
+          },
+          "peak_ram_mb": {
+            "count": 3,
+            "mean": 1447.8255208333333,
+            "median": 1447.83203125,
+            "stddev": 0.04140133618641835,
+            "min": 1447.78125,
+            "max": 1447.86328125
+          },
+          "energy_proxy_joules": {
+            "count": 3,
+            "mean": 17.12839241071573,
+            "median": 13.24158758537378,
+            "stddev": 7.137571950720144,
+            "min": 12.777790173008626,
+            "max": 25.36579947376478
+          }
+        }
+      },
+      "qwen2.5-1.5b-q6_k:t8:c1024:cpu:cache-prompt-cache-disabled:compress-whitespace:retrieval-off": {
+        "model_id": "qwen2.5-1.5b-q6_k",
+        "quantization": "Q6_K",
+        "configuration": {
+          "configuration_id": "qwen2.5-1.5b-q6_k:t8:c1024:cpu:cache-prompt-cache-disabled:compress-whitespace:retrieval-off",
+          "backend": "llama.cpp",
+          "threads": 8,
+          "context_size": 1024,
+          "gpu_layers": 0,
+          "cache": "prompt-cache-disabled",
+          "prompt_compression": "whitespace",
+          "retrieval": {
+            "enabled": false,
+            "top_k": 3,
+            "corpus_dir": "logs/retrieval_corpora/spider_schema_20926a3d94a2"
+          }
+        },
+        "successful_trials": 3,
+        "task_quality": {
+          "count": 3,
+          "mean": 1.0,
+          "median": 1.0,
+          "stddev": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "metrics": {
+          "end_to_end_seconds": {
+            "count": 3,
+            "mean": 3.2228743333447105,
+            "median": 3.1868386999703944,
+            "stddev": 0.06292702063838171,
+            "min": 3.1862489000195637,
+            "max": 3.295535400044173
+          },
+          "ttft_seconds": {
+            "count": 3,
+            "mean": 2.55069826671388,
+            "median": 2.5595913000870496,
+            "stddev": 0.018743425074461324,
+            "min": 2.5291637000627816,
+            "max": 2.563339799991809
+          },
+          "prompt_processing_seconds": {
+            "count": 3,
+            "mean": 2.5367356666666665,
+            "median": 2.5428029999999997,
+            "stddev": 0.012716359555050894,
+            "min": 2.522122,
+            "max": 2.5452820000000003
+          },
+          "prompt_tokens_per_second": {
+            "count": 3,
+            "mean": 57.161034882009744,
+            "median": 57.02368606612467,
+            "stddev": 0.2873380868240517,
+            "min": 56.968147340844745,
+            "max": 57.49127123905981
+          },
+          "generation_tokens_per_second": {
+            "count": 3,
+            "mean": 16.461517378797353,
+            "median": 16.759963798478196,
+            "stddev": 1.3676328467344796,
+            "min": 14.96930611822758,
+            "max": 17.65528221968628
+          },
+          "peak_ram_mb": {
+            "count": 3,
+            "mean": 1620.1497395833333,
+            "median": 1620.16015625,
+            "stddev": 0.043905508593977516,
+            "min": 1620.1015625,
+            "max": 1620.1875
+          },
+          "energy_proxy_joules": {
+            "count": 3,
+            "mean": 120.28987144063368,
+            "median": 117.65011770615705,
+            "stddev": 4.830232199846198,
+            "min": 117.35476084955692,
+            "max": 125.86473576618707
+          }
+        }
+      },
+      "qwen2.5-3b-q4_k_m:t8:c1024:cpu:cache-prompt-cache-enabled:compress-none:retrieval-off": {
+        "model_id": "qwen2.5-3b-q4_k_m",
+        "quantization": "Q4_K_M",
+        "configuration": {
+          "configuration_id": "qwen2.5-3b-q4_k_m:t8:c1024:cpu:cache-prompt-cache-enabled:compress-none:retrieval-off",
+          "backend": "llama.cpp",
+          "threads": 8,
+          "context_size": 1024,
+          "gpu_layers": 0,
+          "cache": "prompt-cache-enabled",
+          "prompt_compression": "none",
+          "retrieval": {
+            "enabled": false,
+            "top_k": 3,
+            "corpus_dir": "logs/retrieval_corpora/spider_schema_20926a3d94a2"
+          }
+        },
+        "successful_trials": 3,
+        "task_quality": {
+          "count": 3,
+          "mean": 1.0,
+          "median": 1.0,
+          "stddev": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "metrics": {
+          "end_to_end_seconds": {
+            "count": 3,
+            "mean": 1.491029733287481,
+            "median": 1.3680677999509498,
+            "stddev": 0.21375465170978117,
+            "min": 1.367169599980116,
+            "max": 1.7378517999313772
+          },
+          "ttft_seconds": {
+            "count": 3,
+            "mean": 0.10494626662693918,
+            "median": 0.09454409999307245,
+            "stddev": 0.02179384946691972,
+            "min": 0.09030249994248152,
+            "max": 0.12999219994526356
+          },
+          "prompt_processing_seconds": {
+            "count": 3,
+            "mean": 0.09041300000000001,
+            "median": 0.08744400000000001,
+            "stddev": 0.007430547288053549,
+            "min": 0.084926,
+            "max": 0.098869
+          },
+          "prompt_tokens_per_second": {
+            "count": 3,
+            "mean": 11.10841373788042,
+            "median": 11.435890398426421,
+            "stddev": 0.8773814909235276,
+            "min": 10.114393793807968,
+            "max": 11.774957021406872
+          },
+          "generation_tokens_per_second": {
+            "count": 3,
+            "mean": 7.339838875194566,
+            "median": 7.863935050187633,
+            "stddev": 1.1041052254063173,
+            "min": 6.071291533705382,
+            "max": 8.084290041690682
+          },
+          "peak_ram_mb": {
+            "count": 3,
+            "mean": 2264.8190104166665,
+            "median": 2264.82421875,
+            "stddev": 0.047091513854232096,
+            "min": 2264.76953125,
+            "max": 2264.86328125
+          },
+          "energy_proxy_joules": {
+            "count": 3,
+            "mean": 50.18648387810838,
+            "median": 46.367101103057564,
+            "stddev": 7.489261532425169,
+            "min": 45.37692867734005,
+            "max": 58.815421853927546
+          }
+        }
+      }
+    },
+    "success_count": 15,
+    "failure_count": 0,
+    "safety_skip_count": 48,
+    "deferred_count": 667
+  },
+  "hardware_profile_mirror": {
+    "status": "persisted"
+  },
+  "provenance_note": "Each trial stores model SHA-256, runtime configuration, llama.cpp version, and hardware snapshot in its raw JSONL record."
+}

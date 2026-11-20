@@ -9,8 +9,7 @@ DEFAULT_WEIGHTS = {
     "generation_tokens_per_second": 0.15,
     "ttft_seconds": 0.10,
     "peak_ram_mb": 0.10,
-    "energy_proxy_joules": 0.10,
-    "quality_per_estimated_watt": 0.15,
+    "energy_joules": 0.10,
 }
 BENEFIT_METRICS = {
     "task_quality",
@@ -20,7 +19,7 @@ BENEFIT_METRICS = {
     "quality_per_measured_watt",
     "quality_per_watt",
 }
-COST_METRICS = {"ttft_seconds", "peak_ram_mb", "energy_proxy_joules"}
+COST_METRICS = {"ttft_seconds", "peak_ram_mb", "energy_joules"}
 
 
 def _normalise(values: list[float], benefit: bool) -> list[float]:
@@ -32,6 +31,10 @@ def _normalise(values: list[float], benefit: bool) -> list[float]:
 
 def score_candidates(candidates: list[dict[str, Any]], weights: dict[str, float] | None = None) -> dict[str, Any]:
     """Return metric-normalized scores; unavailable metrics are excluded, not guessed."""
+    if weights:
+        unknown = set(weights) - set(DEFAULT_WEIGHTS)
+        if unknown:
+            raise ValueError(f"Unsupported selection metrics: {', '.join(sorted(unknown))}")
     active_weights = {**DEFAULT_WEIGHTS, **(weights or {})}
     normalized = [dict() for _ in candidates]
     available_weights: dict[str, float] = {}
@@ -39,7 +42,7 @@ def score_candidates(candidates: list[dict[str, Any]], weights: dict[str, float]
         values = [candidate.get(metric) for candidate in candidates]
         if weight <= 0 or any(value is None for value in values):
             continue
-        numeric = [float(value) for value in values]
+        numeric = [float(value) for value in values if value is not None]
         for row, value in zip(normalized, _normalise(numeric, metric in BENEFIT_METRICS), strict=True):
             row[metric] = value
         available_weights[metric] = weight
